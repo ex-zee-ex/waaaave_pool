@@ -48,8 +48,6 @@ float c7=0.0;
 
 
 
-int fb0_delayamount=0;
-
 
 //framebuffer management biziness
 
