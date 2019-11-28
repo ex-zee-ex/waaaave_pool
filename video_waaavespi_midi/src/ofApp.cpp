@@ -14,23 +14,25 @@
 
 
 float az = 1.0;
-float sx = .5;
-float dc = .0;
-float fv = .0;
+float sx = 0;
+float dc = 0;
+float fv = 1;
 float gb = 1;
 float hn = 1;
-float jm = 1;
-float kk = 0.0;
+float jm = 0.0;
+float kk = 0.25;
+float ll = 0.0;
 float qw = 0.0;
-
-float er=0.0;
 
 float op = 0.0;
 
-float fb0_lumakey_value=0.0;
 
 
-float fb0_lumakey_threshold=0.25;
+
+
+
+int fb0_delayamount=0;
+
 
 
 //dummy variables for midi control
@@ -187,44 +189,54 @@ void ofApp::draw() {
                 //then find the variable that youd like to control down in CAVARIABLEZONES or MIXERVARIBLEZONES
                 //and substitute c1,c2, ..cn whichever control knob u wish the map
                 
+                
+                //c1 maps to fb0 hue attenuation
                 if(message.control==20){
                     c1=(message.value-63.0)/63.0;
                    //  c1=(message.value)/127.00;
                     
                 }
                 
+                //c2 maps to fb0 saturation attenuation
                 if(message.control==21){
                     c2=(message.value-63.0)/63.0;
                    //   c2=(message.value)/127.00;
                     
                 }
                 
+                //c3 maps to fb0 brightness attenuation
                 if(message.control==22){
                     c3=(message.value-63.0)/63.00;
                     //  c3=(message.value)/127.00;
                 }
                 
+                //c4 maps to fb0_mix amount
                 if(message.control==23){
                      c4=(message.value-63.0)/63.00;
                    // c4=(message.value)/127.00;
                    
                 }
                 
+                //c5 maps to fb0 x displace
                 if(message.control==24){
                      c5=(message.value-63.0)/63.00;
                   //  c5=(message.value)/127.00;
                   
                 }
+                
+                //c6 maps to fb0 y displace
                 if(message.control==25){
                     c6=(message.value-63.0)/63.0;
                     //  c4=(message.value)/127.00;
                 }
                 
-                
+                //c7 maps to fb0 z displace
                 if(message.control==26){
                     c7=(message.value-63.0)/63.0;
                     //  c4=(message.value)/127.00;
                 }
+                
+                //c8 maps to fb0 luma key value
                 if(message.control==27){
                    //  c8=(message.value-63.0)/63.00;
                     c8=(message.value)/127.0;
@@ -282,16 +294,16 @@ void ofApp::draw() {
     
     
     //mixing variables
-    shader_mixer.setUniform1f("fb0_mix",kk+2.0*c4);
-    shader_mixer.setUniform1f("fb0_lumakey_value",fb0_lumakey_value+1.1*c8);
+    shader_mixer.setUniform1f("fb0_mix",jm+2.0*c4);
+    shader_mixer.setUniform1f("fb0_lumakey_value",kk+1.1*c8);
    
     
     
     shader_mixer.setUniform1f("fb1_mix",op);
     
     //fb0_displacment variables
-    shader_mixer.setUniform1f("fb0_xdisplace",dc+.01*c5);
-    shader_mixer.setUniform1f("fb0_ydisplace",fv+.01*c6);
+    shader_mixer.setUniform1f("fb0_xdisplace",sx+.01*c5);
+    shader_mixer.setUniform1f("fb0_ydisplace",dc+.01*c6);
     shader_mixer.setUniform1f("fb0_zdisplace",az*(1+.1*c7));
     shader_mixer.setUniform1f("fb0_rotate",qw);
     
@@ -299,7 +311,7 @@ void ofApp::draw() {
     
     
     ofVec3f hsbx;
-    hsbx.set(gb*(1.0+.25*c1),hn*(1.0+.25*c2),jm*(1.0+.25*c3));
+    hsbx.set(fv*(1.0+.25*c1),gb*(1.0+.25*c2),hn*(1.0+.25*c3));
     shader_mixer.setUniform3f("fb0_hsbx",hsbx);
 
     shader_mixer.end();
@@ -390,41 +402,48 @@ void ofApp::keyPressed(int key) {
 		}//endiffb0
 	}//endifkey
     
+    //fb1 mix
     if (key == 'o') {op += .01;}
     if (key == 'p') {op -= .01;}
-	
-	if (key == 'a') {az += .0001;}
+    
+    //fb0 z displace
+    if (key == 'a') {az += .0001;}
     if (key == 'z') {az -= .0001;}
-	
-	if (key == 's') {sx += .01;}
-    if (key == 'x') {sx -= .01;}
-
+    
+    //fb0 x displace
+    if (key == 's') {sx += .0001;}
+    if (key == 'x') {sx -= .0001;}
+    
+    //fb0 y displace
     if (key == 'd') {dc += .0001;}
     if (key == 'c') {dc -= .0001;}
     
-    if (key == 'f') {fv += .0001;}
-    if (key == 'v') {fv -= .0001;}
+    //fb0 hue attenuate
+    if (key == 'f') {fv += .001;}
+    if (key == 'v') {fv -= .001;}
     
+    //fb0 saturation attenuate
     if (key == 'g') {gb += .001;}
     if (key == 'b') {gb -= .001;}
     
+    //fb0 brightness attenuate
     if (key == 'h') {hn += .001;}
     if (key == 'n') {hn -= .001;}
     
-    if (key == 'j') {jm += .001;}
-    if (key == 'm') {jm -= .001;}
+    //fb0 mix
+    if (key == 'j') {jm += .01;}
+    if (key == 'm') {jm -= .01;}
     
-    if (key == 'l') {fb0_lumakey_value += .1;}
-    if (key == '.') {fb0_lumakey_value -= .1;}
+    //fb0 lumakey value
+    if (key == 'k') {kk = ofClamp(kk+.01,0.0,1.0);}
+    if (key == ',') {kk = ofClamp(kk-.01,0.0,1.0);}
     
-    if (key == 'k') {kk += .01;}
-    if (key == ',') {kk -= .01;}
+    if (key == 'l') {ll += .01;}
+    if (key == '.') {ll -= .01;}
     
+    //fb0 rotation
     if (key == 'q') {qw += .0001;}
     if (key == 'w') {qw -= .0001;}
-    
-    if (key == 'e') {er += .01;}
-    if (key == 'r') {er -= .01;}
 
 
     if (key == '1') {
