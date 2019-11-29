@@ -3,9 +3,9 @@
 ![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool4.png)
 
 a port of video_waaaves to raspberry pi
-the larger desktop versions can be found here
+the larger desktop versions can be found here:  
 full sized
-https://github.com/ex-zee-ex/VIDEO_WAAAVES_1_75
+https://github.com/ex-zee-ex/VIDEO_WAAAVES_1_75,  
 lil sized
 https://github.com/ex-zee-ex/lil_waaaves
 
