@@ -16,18 +16,18 @@ hello and welcome to the waaaves pool!  to get started with this program you wil
 keyboard controls
 for each pair x/y means that the corresponding alphanumerical keys on a keyboard increment and decrement the values
 
-a/z - zoom in/out
-s/x - framebuffer0 x displacement
-d/c - framebuffer0 y displacement
-f/v - framebuffer0 hue attenuation
-g/b - framebuffer0 saturation attenuation
-h/n - framebuffer0 brightness attentuation
-j/m - frambuffer0 mix
-k/, - framebuffer0 lumakey
-[/] - framebuffer0 change delay amount
-q/w - framebuffer0 rotate
-o/p - framebuffer1 mix
-1   - clears the framebuffers
+a/z - zoom in/out  
+s/x - framebuffer0 x displacement  
+d/c - framebuffer0 y displacement  
+f/v - framebuffer0 hue attenuation  
+g/b - framebuffer0 saturation attenuation  
+h/n - framebuffer0 brightness attentuation  
+j/m - frambuffer0 mix  
+k/, - framebuffer0 lumakey  
+[/] - framebuffer0 change delay amount  
+q/w - framebuffer0 rotate  
+o/p - framebuffer1 mix  
+1   - clears the framebuffers  
 
 ![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool2.png)
 
