@@ -181,11 +181,15 @@ void ofApp::draw() {
                 
                 
                 //MIDIMAPZONE
-                //these are all set to output bipolor controls at this moment (ranging from -1.0 to 1.0)
+                //these are mostly all set to output bipolor controls at this moment (ranging from -1.0 to 1.0)
                 //if u uncomment the second line on each of these if statements that will switch thems to unipolor
                 //controls (ranging from 0.0to 1.0) if  you prefer
-                //then find the variable that youd like to control down in CAVARIABLEZONES or MIXERVARIBLEZONES
-                //and substitute c1,c2, ..cn whichever control knob u wish the map
+                
+		//these controls are currently set to the default cc values of the korg nanostudio so if you got one of those yr in luck!
+		//otherwise you will need to figure out the cc values for the knobs and sliders on your particular controller
+		//and for each line where it says " if(message.control==XX)" replace XX with the cc value for the knob that you want to 
+		//map for each control.  
+		    
                 
                 
                 //c1 maps to fb0 hue attenuation
