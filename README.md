@@ -36,5 +36,5 @@ if you are using the midi version then these keyboard controls will work as well
 
 for midi mapping your usb midi controller check ofApp.cpp and ctrl-f for "MIDIMAPZONES".  check the instructions there and have fun!
 
-![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool0.png)
+![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool1.png)
 
