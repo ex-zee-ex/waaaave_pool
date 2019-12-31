@@ -14,6 +14,9 @@ hello and welcome to the waaaves pool!  to get started with this program you wil
 
 ![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool3.png)
 
+once you have openFrameworks downloaded, built, and tested, and all of the addons installed as well, clone or download this repository and then move the folder WAAAAVE_POOL_MAIN into the openFrameworks->apps->myApps folder.  If you are running on a gui style raspbian you can then right click on the folder and select "open in terminal" then type 'make', wait for a minute or two until that step is finished, and then 'make run' once you have a prompt again.
+
+
 keyboard controls
 for each pair x/y means that the corresponding alphanumerical keys on a keyboard increment and decrement the values
 
