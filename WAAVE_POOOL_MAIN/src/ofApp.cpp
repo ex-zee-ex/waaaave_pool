@@ -1102,7 +1102,7 @@ void ofApp::draw() {
 
    ofSetColor(255);
    string msg="fps="+ofToString(ofGetFrameRate(),2)+" clear switch"+ofToString(clear_switch,5);//+" z="+ofToString(az,5);
-   ofDrawBitmapString(msg,10,10);
+   //ofDrawBitmapString(msg,10,10);
 }
 
 //--------------------------------------------------------------
