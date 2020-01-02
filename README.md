@@ -1,6 +1,6 @@
 # waaaave_pool
 
-![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool4.png)
+![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool_splashscreen_final.png)
 
 a port of video_waaaves to raspberry pi
 the larger desktop versions can be found here:  
@@ -9,6 +9,8 @@ https://github.com/ex-zee-ex/VIDEO_WAAAVES_1_75,
 lil sized
 https://github.com/ex-zee-ex/lil_waaaves
 there are multiple versions up for playing with right now but the one titled WAAAVE_POOL_MAIN is the most recent and bestest build, also the only one that works with the picapture sd so try that one first.  unfortunately the ofxOMXcamera addon does not seem to currently work for buster and openFrameworks 0.11 so for best results i advise raspbian Stretch and openFrameworks 0.10.  
+
+![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool4.png)
 
 hello and welcome to the waaaves pool!  to get started with this program you will need at least raspberry pi(i built and tested this in raspbian on a raspberry pi 3 b v1.2), a usb camera (all images and demo videos were made with a logitech c310 which can be found very affordably on ebay.  i highly reccomend only logitech usb cameras as the only brand im aware of with consistent driver support cross platforms) or a picapturesd for input, a usb keyboard for controls.  There is option to support a usb midi keyboard as well(the default midi controls are mapped to the default cc values for the knobs on a korg nanostudio in the current version, there are instructions on midi mapping below).  A build of openFrameworks is also necessary, https://openframeworks.cc/setup/raspberrypi/ for more info.  Once you have openFrameworks installed and working you will also need to install the ofxMidi addon https://github.com/danomatika/ofxMidi and the ofxOMXCamera addon https://github.com/langolierz/ofxOMXCamera.  For midi controllers this code is built around a korg nanokontrol2, for best operations there is a firmware thing you can do with the korg kontrol editor that you load and then send over to the midi controller and then its pretty much plug and play from there!
 
