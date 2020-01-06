@@ -65,12 +65,19 @@ for midi mapping your usb midi controller check ofApp.cpp and ctrl-f for "MIDIMA
 list of default midi ccs
 
 Luma key               -16
+
 Mix                    -17
+
 Hue_x                  -18
+
 Sat_x                  -19
+
 Bright_x               -20
+
 Temporal filter mix    -21
+
 Temp filter Q          -22
+
 Input boost            -23
 X displace             -0
 Y displace             -1
