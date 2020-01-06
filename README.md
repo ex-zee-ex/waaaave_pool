@@ -81,3 +81,13 @@ Chaotic hue lfo        -5
 Chaotic hue offset     -6
 Delay time (in frames) -7
 
+
+toggle switches
+bright invert          -43
+sat invert             -44
+hue invert             -42
+H mirror               -41
+V mirror               -45
+Toroidal Universe      -46
+
+
