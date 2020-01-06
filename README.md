@@ -63,6 +63,7 @@ for midi mapping your usb midi controller check ofApp.cpp and ctrl-f for "MIDIMA
 
 
 list of default midi ccs
+***(&(^%continuous things((**&&^^^
 
 Luma key               -16
 
@@ -79,22 +80,53 @@ Temporal filter mix    -21
 Temp filter Q          -22
 
 Input boost            -23
+
 X displace             -0
+
 Y displace             -1
+
 Z displace             -2
+
 Rotate                 -3
+
 Chaotic hue mod        -4
+
 Chaotic hue lfo        -5
+
 Chaotic hue offset     -6
+
 Delay time (in frames) -7
 
 
-toggle switches
+**77***&toggle switches&**^****(((
+
 bright invert          -43
+
 sat invert             -44
+
 hue invert             -42
+
 H mirror               -41
+
 V mirror               -45
+
 Toroidal Universe      -46
 
 
+on the nanokontrol for each of the sliders (midi cc values 0 through 6) there are three buttons alongside which I have programmed to change the total range of what each slider does.  I will list those cc values here  in the order (medium, large, ridiculous)  (small is default setting.  the larger buttons override smaller buttons so if medium, large, and ridiculous are all toggled then only ridiculous is actually enabled.  ridiculous settings for the xyz and rotate plus toroidal universe is where very ornate fractal painting mode gets started
+
+x displace          (32,48,64)
+
+y displace          (33,39,65)
+
+z displace          (34,40,66)
+
+rotate              (35,41,67)
+
+chaotic hue mod     (36,42,68)
+
+chaotic hue lfo     (37,43,69)
+
+chaotic hue offset  (38,44,70)
+
+there are 7 more toggles/momentary unassigned on the default control schemes at this moment. I have not explored different ranges on the total delay times yet so let me know if that seems desireable.  Suggestions for more switches are welcome as well 
