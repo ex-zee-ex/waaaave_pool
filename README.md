@@ -8,6 +8,7 @@ full sized
 https://github.com/ex-zee-ex/VIDEO_WAAAVES_1_75,  
 lil sized
 https://github.com/ex-zee-ex/lil_waaaves
+
 there are multiple versions up for playing with right now but the one titled WAAAVE_POOL_MAIN is the most recent and bestest build, also the only one that works with the picapture sd so try that one first.  unfortunately the ofxOMXcamera addon does not seem to currently work for buster and openFrameworks 0.11 so for best results i advise raspbian Stretch (http://downloads.raspberrypi.org/raspbian/images/raspbian-2019-04-09/) and openFrameworks 0.10 (https://openframeworks.cc/download/older/ choose linux armv7)).  Eventually I will have a custom image for download that you can just flash to an sd card but until then it involves a bit of linuxing!  If you only have buster to play with then use the folder that ends with "noOmx" for a compatible build but be forewarned that there are kind of a bunch of gl issues with buster still and full screen doesnt seem to work plus some obnoxious banding as well.  
 
 ![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool4.png)
