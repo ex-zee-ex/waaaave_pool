@@ -122,16 +122,17 @@ on the nanokontrol for each of the sliders (midi cc values 0 through 6) there ar
 
 x displace          (32,48,64)
 
-y displace          (33,39,65)
+y displace          (33,49,65)
 
-z displace          (34,40,66)
+z displace          (34,50,66)
 
-rotate              (35,41,67)
+rotate              (35,51,67)
 
-chaotic hue mod     (36,42,68)
+chaotic hue mod     (36,52,68)
 
-chaotic hue lfo     (37,43,69)
+chaotic hue lfo     (37,53,69)
 
-chaotic hue offset  (38,44,70)
+chaotic hue offset  (38,54,70)
+
 
 there are 7 more toggles/momentary unassigned on the default control schemes at this moment. I have not explored different ranges on the total delay times yet so let me know if that seems desireable.  Suggestions for more switches are welcome as well 
