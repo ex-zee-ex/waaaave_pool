@@ -40,14 +40,23 @@ e/r - chaotic hue mod
 t/y - chaotic hue lfo
 u/i - chaotic hue offset
 -/= - y skew
+
 9/0 - x skew
+
 1   - clears the framebuffers  
+
 !   - resets all controls
+
 2   - invert framebuffer0 brightness
+
 3   - invert framebuffer0 hue
+
 4   - invert framebuffer0 saturation
+
 5   - vertical mirror
+
 6   - horizontal mirror
+
 7   - toriodal universe
 
 yes i am aware that much of this labelling is mysterious nonsense.  I'm in the process of writing a better manual right now but honestly words are not going to help much more than just saying "ok if you touch these things something will happen if you look at the screen you will def notice a thing or two that will then map into some dendritic connections between axons or something!".  but yeah also i have to like draw some diagrams too and that kind of takes me some time too so yeah.
