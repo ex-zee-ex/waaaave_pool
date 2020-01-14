@@ -9,15 +9,36 @@ https://github.com/ex-zee-ex/VIDEO_WAAAVES_1_75,
 lil sized
 https://github.com/ex-zee-ex/lil_waaaves
 
-there are multiple versions up for playing with right now but the one titled WAAAVE_POOL_MAIN is the most recent and bestest build, also the only one that works with the picapture sd so try that one first.  unfortunately the ofxOMXcamera addon does not seem to currently work for buster and openFrameworks 0.11 so for best results i advise raspbian Stretch (http://downloads.raspberrypi.org/raspbian/images/raspbian-2019-04-09/) and openFrameworks 0.10 (https://openframeworks.cc/download/older/ choose linux armv7)).  Eventually I will have a custom image for download that you can just flash to an sd card but until then it involves a bit of linuxing!  If you only have buster to play with then use the folder that ends with "noOmx" for a compatible build but be forewarned that there are kind of a bunch of gl issues with buster still and full screen doesnt seem to work plus some obnoxious banding as well.  
+How to install!  Easiest way (if yr not adept at both openFrameworks and navigating in raspbian) is to just flash an sd card with the image located here https://drive.google.com/open?id=1ly_PBq4DDyxd6zYmoqIl_yF_aaYJZQcp and plug everything in and power up! 
+components list
+
+Raspberry Pi 3b (fairly sure 3b+ works fine as well)
+
+micro sd card minimum 8g
+
+raspberry pi power supply (5v 2.5a micro usb connection)
+
+a usb camera input (logitech c310 or similar logitech camera capable of 640x480 recommended)
+
+a midi controller for input (nanokontrol 2 recommended as all the default controls are built around that model)
+
+OR a usb keyboard for controls (much cheaper option though a bit less fun than knobs tbh)
+
+some sort of usb micro sd card adapter to write the image
+
+optional: Picapture sd1 capture card for sd video
+
+
+(for nanokontrol2 to operate at its best download the nanokontrol scene data file and use the Korg Kontrol Editor to update the midi info on the nanokontrol otherwise buttons wont work right and a bunch of the knobs will be momentary instead of toggles)
 
 ![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool4.png)
 
-hello and welcome to the waaaves pool!  to get started with this program you will need at least raspberry pi(i built and tested this in raspbian on a raspberry pi 3 b v1.2), a usb camera (all images and demo videos were made with a logitech c310 which can be found very affordably on ebay.  i highly reccomend only logitech usb cameras as the only brand im aware of with consistent driver support cross platforms) or a picapturesd for input, a usb keyboard for controls.  There is option to support a usb midi keyboard as well(the default midi controls are mapped to the default cc values for the knobs on a korg nanokontrol2 in the current version, there are instructions on midi mapping below (eventually)).  A build of openFrameworks is also necessary, https://openframeworks.cc/setup/raspberrypi/ for more info.  Once you have openFrameworks installed and working you will also need to install the ofxMidi addon https://github.com/danomatika/ofxMidi and the ofxOMXCamera addon https://github.com/langolierz/ofxOMXCamera.  For midi controllers this code is built around a korg nanokontrol2, for best operations there is a firmware thing you can do with the korg kontrol editor that you load and then send over to the midi controller and then its pretty much plug and play from there!
+***more complicated way to installl*****
+if you are insistent upon doing things the long way.
+Raspbian Stretch and openFrameworks 0.10 are the recommended environments, any other combos is not supported on my end at this moment
+To build openFrameworks run through the steps here https://openframeworks.cc/setup/raspberrypi/o.  Once you have openFrameworks installed and working you will also need to install the ofxMidi addon https://github.com/danomatika/ofxMidi and the ofxOMXCamera addon https://github.com/langolierz/ofxOMXCamera.  the WAAAVE_POOL_MAIN folder will need to be downloaded and moved into the myApps folder within the openFrameworks folder 
 
 ![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool3.png)
-
-once you have openFrameworks downloaded, built, and tested, and all of the addons installed as well, clone or download this repository and then move the folder WAAAAVE_POOL_MAIN into the openFrameworks->apps->myApps folder.  If you are running on a gui style raspbian you can then right click on the folder and select "open in terminal" then type 'make', wait for a minute or two until that step is finished, and then 'make run' once you have a prompt again.
 
 
 keyboard controls
@@ -59,16 +80,14 @@ u/i - chaotic hue offset
 
 7   - toriodal universe
 
-yes i am aware that much of this labelling is mysterious nonsense.  I'm in the process of writing a better manual right now but honestly words are not going to help much more than just saying "ok if you touch these things something will happen if you look at the screen you will def notice a thing or two that will then map into some dendritic connections between axons or something!".  but yeah also i have to like draw some diagrams too and that kind of takes me some time too so yeah.
 
-
-if you are using the midi version then these keyboard controls will work as well but if you change them then they can potentially change or offset the ranges of the midi controls heads up
+if you are using a midi controller then these keyboard controls will work as well but yall should take into account that using both the midi controller and the usb keyboard at the same time can do some really confusing stuff in terms how keyboard entry can offset ranges of the midi interfaces!  so maybe fun if you like to be confused but just a heads up on that front.
 
 ![Image description](https://github.com/ex-zee-ex/pictures/blob/master/78.jpg)
 
 (notes: parenthesis (U) and (B) after the controls means Unipolar and Bipolar respectively.  unipolar means that values go from 0-1, bipolar means that values go from -1 to 1.  this means that if you want to set values to 0 on a unipolar knob then you turn it all of the way to the left and if you want to set values to 0 on a bipolar knob you set it at 12 o clock.  Unipolar 0 on a slider means all of the way down, bipolar 0 means exactly in the middle.  Most of these parameters we will assume are normalized, which means we will think of 0 as being all of the way off and 1 as being 100 percent on.  This can get a little strange because some values are set so that they actually go from like -200 percent off to +200 percent on but bear with me, it is all happening for reasons!  if the default parameter set is anything other than (0,1) or (-1,1) it will be shown in parenthesis as well.  the framebuffer delay channel will be henceforth referred to as fb0)
 
-1. Luma Key Level. (U)  This selects a brightness value in the video input channel to key fb0 into.  For example, if I turn my Luma Key Level knob to 12 o clock, that means everything in the input channel with brightness less than 50 percent will be replaced by fb0.  0 means that none of fb0 is keyed in, 1 means that none of the input channel will be visible.
+1. Luma Key Level. (U)  This selects a brightness value in the video input channel to key fb0 into.  For example, if I turn my Luma Key Level knob to 12 o clock, that means everything in the input channel with brightness less than 50 percent will be replaced by fb0.  0 means that none of fb0 is keyed in, 1 means that none of the input channel will be visible.  When the luma key switch is flipped it just reverses the operation here so that if knob is at 12 o clock everything with brightness more than 50 percent will be keyed out.
 
 2. Mix level. (B) (-1.1,1.1)  For values between 0 and 1 this functions as a fade between the input channel and fb0.  For values outside of this range interesting distortions can happen.  Strobing can occur when there are very short (less than 5 frames) delay times and negative mix values.  Mix is downstream from Key so you can key and mix at the same time, the mixing will only affect the unkeyed part of the input channel though!  The actual mathematics being performed is a linear interpolation (aka lerp in many programming languages) between each pixel. Let Input pixel be I, Mix level be M and fb0 pixel be F, then the value of each pixel will be set by I*(1-M)+F*M.
 
