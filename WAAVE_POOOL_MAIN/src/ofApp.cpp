@@ -53,6 +53,12 @@ float testt=1.0;
 bool y_skew_switch=FALSE;
 bool x_skew_switch=FALSE;
 
+bool luma_switch=FALSE;
+
+bool x_mirror_switch=FALSE;
+
+bool y_mirror_switch=FALSE;
+
 float y_skew=0;
 
 float x_skew=0;
@@ -644,9 +650,40 @@ void ofApp::draw() {
                 }
                 
                 
+                //
                 
+                if(message.control==62){
+					if(message.value==127){
+						luma_switch=TRUE;
+					}
+					
+					if(message.value==0){
+						luma_switch=FALSE;
+					}
+					
+                }
                 
+                if(message.control==61){
+					if(message.value==127){
+						x_mirror_switch=TRUE;
+					}
+					
+					if(message.value==0){
+						x_mirror_switch=FALSE;
+					}
+					
+                }
                 
+                 if(message.control==60){
+					if(message.value==127){
+						y_mirror_switch=TRUE;
+					}
+					
+					if(message.value==0){
+						y_mirror_switch=FALSE;
+					}
+					
+                }
                 
                 
                 
@@ -705,7 +742,7 @@ void ofApp::draw() {
                 }
                 
                 //c9 maps to fb0 x displace
-                if(message.control==0){
+                if(message.control==120){
                      c9=(message.value-63.0)/63.00;
                      
                      if(x_2==TRUE){
@@ -723,7 +760,7 @@ void ofApp::draw() {
                 }
                 
                  //c10 maps to fb0 y displace
-                if(message.control==1){
+                if(message.control==121){
                      c10=(message.value-63.0)/63.00;
                      
                      
@@ -743,8 +780,8 @@ void ofApp::draw() {
                    
                 }
                 
-                 //c11 maps to fb0 z displace
-                if(message.control==2){
+               
+                if(message.control==122){
                      c11=(message.value-63.0)/63.00;
                      
                      if(z_2==TRUE){
@@ -761,9 +798,8 @@ void ofApp::draw() {
                     //c11=(message.value)/127.0;
                    
                 }
-                
-                 //c12 maps to fb0 rotate
-                if(message.control==3){
+              
+                if(message.control==123){
                      c12=(message.value-63.0)/63.00;
                      
                      if(theta_0==TRUE){
@@ -781,8 +817,8 @@ void ofApp::draw() {
                    
                 }
                 
-                //c13 maps to huex.x
-                if(message.control==4){
+             
+                if(message.control==124){
                     // c13=(message.value-63.0)/63.00;
                      
                     //instead of switches to go from different multiples
@@ -803,8 +839,8 @@ void ofApp::draw() {
                    
                 }
               
-                //c14 maps to huex.x
-                if(message.control==5){
+            
+                if(message.control==125){
                      c14=(message.value-63.0)/63.00;
                      
                      if(huexy_0==TRUE){
@@ -824,8 +860,8 @@ void ofApp::draw() {
                    
                 }
                 
-                 //c15 maps to fb1_brightnsatx
-                if(message.control==6){
+               
+                if(message.control==126){
                      c15=(message.value-63.0)/63.00;
                      
                      if(huexz_0==TRUE){
@@ -843,8 +879,8 @@ void ofApp::draw() {
                    
                 }
                 
-                //c16 maps to cam11_brightnsatx
-                if(message.control==7){
+                
+                if(message.control==127){
                    //  c16=(message.value-63.0)/63.00;
                     c16=(message.value)/127.0;
                    
@@ -1066,6 +1102,13 @@ void ofApp::draw() {
     shader_mixer.setUniform1i("toroid_switch",toroid_switch);
     
     shader_mixer.setUniform1f("boost",midiscaler);
+    
+    
+    shader_mixer.setUniform1i("luma_switch",luma_switch);
+    
+    shader_mixer.setUniform1i("x_mirror_switch",x_mirror_switch);
+    
+    shader_mixer.setUniform1i("y_mirror_switch",y_mirror_switch);
 
     shader_mixer.end();
 	framebuffer0.end();
@@ -1100,9 +1143,12 @@ void ofApp::draw() {
    
 	//ofDrawBitmapString("fps =" + ofToString(getFps()), 10, ofGetHeight() - 5 );
 
+//i use this block of code to print out like useful information for debugging various things and/or just to keep the 
+//framerate displayed to make sure i'm not losing any frames while testing out new features.  uncomment the ofDrawBitmap etc etc
+//to print the stuff out on screen
    ofSetColor(255);
    string msg="fps="+ofToString(ofGetFrameRate(),2)+" clear switch"+ofToString(clear_switch,5);//+" z="+ofToString(az,5);
-   //ofDrawBitmapString(msg,10,10);
+  // ofDrawBitmapString(msg,10,10);
 }
 
 //--------------------------------------------------------------

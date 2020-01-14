@@ -41,6 +41,12 @@ uniform int fb0_h_mirror;
 uniform int fb0_v_mirror;
 
 uniform int toroid_switch;
+
+uniform int luma_switch;
+
+uniform int y_mirror_switch;
+uniform int x_mirror_switch;
+
 varying vec2 texCoordVarying;
 
 
@@ -166,17 +172,22 @@ void main()
 	fb0_coord.x=fb0_zdisplace*fb0_coord.x;
     fb0_coord.y=fb0_zdisplace*fb0_coord.y;
     
-    if(fb0_h_mirror==1){
-		if(fb0_coord.x>0.0){
-			fb0_coord.x=-1.0*fb0_coord.x;
+    if(x_mirror_switch==0){
+		if(fb0_h_mirror==1){
+			if(fb0_coord.x>0.0){
+				fb0_coord.x=-1.0*fb0_coord.x;
+				}
 			}
-		}
 		
+	}	
+	
+	if(y_mirror_switch==0){
 		if(fb0_v_mirror==1){
-		if(fb0_coord.y>0.0){
-			fb0_coord.y=-1.0*fb0_coord.y;
+			if(fb0_coord.y>0.0){
+				fb0_coord.y=-1.0*fb0_coord.y;
+				}
 			}
-		}
+	}		
     
     fb0_coord=vec2(fb0_coord.x+fb0_xdisplace+.5,fb0_coord.y+fb0_ydisplace+.5);
 	
@@ -191,20 +202,22 @@ void main()
 	
 	
 	
-	/*
 	
-	if(fb0_h_mirror==1){
-		if(fb0_coord.x>.5){
-			fb0_coord.x=.5-abs(.5-fb0_coord.x);
+	if(x_mirror_switch==1){
+		if(fb0_h_mirror==1){
+			if(fb0_coord.x>.5){
+				fb0_coord.x=.5-abs(.5-fb0_coord.x);
+				}
 			}
-		}
-		
+	}
+	
+	if(y_mirror_switch==1){	
 		if(fb0_v_mirror==1){
 		if(fb0_coord.y>.5){
 			fb0_coord.y=.5-abs(.5-fb0_coord.y);
 			}
 		}
-	*/
+	}
 	
 	vec4 fb0_color = texture2D(fb0, fb0_coord);
 	
@@ -263,11 +276,20 @@ void main()
 	
 	//janky keying
 	float cam1_bright=.33*cam1_color.r+.5*cam1_color.g+.16*cam1_color.b;
-	if(cam1_bright<fb0_lumakey_value)
-	{
-		color=fb0_color;
+	
+	if(luma_switch==0){
+		if(cam1_bright<fb0_lumakey_value)
+		{
+			color=fb0_color;
+		}
 	}
 	
+	if(luma_switch==1){
+		if(cam1_bright>fb0_lumakey_value)
+		{
+			color=fb0_color;
+		}
+	}
 	
 	color=mix(color,fb1_color,fb1_mix);
 	
