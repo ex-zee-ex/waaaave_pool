@@ -208,4 +208,5 @@ chaotic hue lfo     (37,53,69)
 chaotic hue offset  (38,54,70)
 
 
-there are 7 more toggles/momentary unassigned on the default control schemes at this moment. I have not explored different ranges on the total delay times yet so let me know if that seems desireable.  Suggestions for more switches are welcome as well 
+join the video_waaaves fb group to keep up to date on this and other softwares and hardwares that i make!
+https://www.facebook.com/groups/440566853501750
