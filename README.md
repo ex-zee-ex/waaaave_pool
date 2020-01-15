@@ -184,11 +184,11 @@ x skew                 -39
 
 y skew                 -55
 
-key swap b/w           -60
+key swap b/w           -62
 
 alt h mirror           -61
 
-alt v mirror           -62 
+alt v mirror           -60 
 
 
 on the nanokontrol for each of the sliders (midi cc values 0 through 6) there are three buttons alongside which I have programmed to change the total range of what each slider does.  I will list those cc values here  in the order (medium, large, ridiculous)  (small is default setting.  the larger buttons override smaller buttons so if medium, large, and ridiculous are all toggled then only ridiculous is actually enabled.  ridiculous settings for the xyz and rotate plus toroidal universe is where very ornate fractal painting mode gets started
