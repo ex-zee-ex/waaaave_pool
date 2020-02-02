@@ -31,6 +31,12 @@ public:
 	void mousePressed(int x, int y, int button);
 	void mouseReleased();
 	
+	void omx_settings();
+	
+	void omx_updates();
+	
+	void midibiz();
+	
 	void newMidiMessage(ofxMidiMessage& eventArgs);
 	
 	ofxMidiIn midiIn;

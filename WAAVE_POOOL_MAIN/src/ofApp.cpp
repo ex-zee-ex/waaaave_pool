@@ -14,13 +14,15 @@
 
 //flip this switch to try different scalings
 //0 is 320 1 is 640
+//if you reduce scale you can up the total delay time to
+//about 4 seconds/ 120 frames
 bool scaleswitch=1;
 
 //0 is picaputre, 1 is usbinput
-bool inputswitch=1;
+bool inputswitch=0;
 
 //0 is no midi controller input, 1 is midi controller
-bool midiswitch=1;
+bool midiswitch=0;
 
 //at the moment there is a brightness reduction that comes along with
 //having the midi controller involved so if we have one then
@@ -164,7 +166,7 @@ void incIndex()  // call this every frame to calc the offset eeettt
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-	ofSetVerticalSync(true);
+	//ofSetVerticalSync(true);
 
    ofSetFrameRate(30);
     
@@ -183,16 +185,8 @@ void ofApp::setup() {
 		height=480;
 	}
 	  
-    settings.sensorWidth = 640;
-    settings.sensorHeight = 480;
-    settings.framerate = 30;
-    settings.enableTexture = true;
-    settings.sensorMode=7;
+	omx_settings();  
     
-    settings.whiteBalance ="Off";
-    settings.exposurePreset ="Off";
-    settings.whiteBalanceGainR = 1.0;
-    settings.whiteBalanceGainB = 1.0;
     
     //pass in the settings and it will start the camera
 	if(inputswitch==0){
@@ -266,10 +260,9 @@ void ofApp::update() {
 	}
 	
 	if(inputswitch==0){
-		videoGrabber.setSharpness(100);
-		videoGrabber.setBrightness(40);
-		videoGrabber.setContrast(100);
-		videoGrabber.setSaturation(0);
+		
+		omx_updates();
+		
 	}
 }
 
@@ -279,21 +272,356 @@ void ofApp::draw() {
 
 	//begin midi biz
 	
+	midibiz();
 	
+	
+	
+	//control attenuation section
+
+	
+	
+	
+	//ok so here is the plan.  try out 1 framebuffer and test out how far back
+//in time we can go.  the mix will have the following controls
+//hsb for framebuffer 0 and 1
+//positions on framebuffer0 ionly 
+//some kind of chaotic hue mixing for fb0
+//lumakeying on fb0 only
+    
+
+    
+    
+    //----------------------------------------------------------
+    //
+	
+	framebuffer0.begin();
+    shader_mixer.begin();
+
+	//videoGrabber.getTextureReference().draw(0, 0, 320, 640);
+	if(scaleswitch==0){
+		
+		if(inputswitch==0){
+			videoGrabber.draw(0,0,320,240);
+		}
+		
+		if(inputswitch==1){
+			cam1.draw(0,0,320,240);
+		}
+	}
+	
+	if(scaleswitch==1){
+		if(inputswitch==0){
+			videoGrabber.draw(0,0);
+		}
+		
+		if(inputswitch==1){
+			cam1.draw(0,0);
+		}
+	}
+	
+	//videoGrabber.draw(0,0);
+    
+    shader_mixer.setUniformTexture("fb0", pastFrames[(abs(framedelayoffset-fbob-fb0_delayamount-int(c16*(fbob-1.0)))-1)%fbob].getTexture(),1);
+    shader_mixer.setUniformTexture("fb1", pastFrames[(abs(framedelayoffset-fbob)-1)%fbob].getTexture(),2);
+    
+    
+    //mixing variables
+    shader_mixer.setUniform1f("fb0_mix",jm+2.0*c2);
+    shader_mixer.setUniform1f("fb0_lumakey_value",kk+1.01*c1);
+   
+    
+    
+    shader_mixer.setUniform1f("fb1_mix",op+1.1*c6);
+    
+    //fb0_displacment variables
+    shader_mixer.setUniform1f("fb0_xdisplace",sx+.01*c9);
+    shader_mixer.setUniform1f("fb0_ydisplace",dc+.01*c10);
+    shader_mixer.setUniform1f("fb0_zdisplace",az*(1+.05*c11));
+    shader_mixer.setUniform1f("fb0_rotate",qw+.314159265*c12);
+    
+   
+    
+    
+    ofVec3f dummy3f;
+    dummy3f.set(fv*(1.0+.75*c3),gb*(1.0+c4),hn*(1.0+.5*c5));//(1.0+.35*c5));
+    shader_mixer.setUniform3f("fb0_hsbx",dummy3f);
+    
+    
+    dummy3f.set(er*(1.0-c13),ty+.25*c14,ui+.25*c15);
+    //dummy3f.set(1.0,.5,.01);
+    shader_mixer.setUniform3f("fb0_huex",dummy3f);
+    
+    shader_mixer.setUniform1f("fb1_brightx", fb1_brightx+c7);
+    shader_mixer.setUniform1f("cam1_brightx",ll+2.0*c8);
+    
+    
+    shader_mixer.setUniform1i("fb0_b_invert",fb0_b_invert);
+    shader_mixer.setUniform1i("fb0_h_invert",fb0_h_invert);
+    shader_mixer.setUniform1i("fb0_s_invert",fb0_s_invert);
+    
+    shader_mixer.setUniform1i("fb0_h_mirror",fb0_h_mirror);
+    shader_mixer.setUniform1i("fb0_v_mirror",fb0_v_mirror);
+    
+    shader_mixer.setUniform1i("toroid_switch",toroid_switch);
+    
+    shader_mixer.setUniform1f("boost",midiscaler);
+    
+    
+    shader_mixer.setUniform1i("luma_switch",luma_switch);
+    
+    shader_mixer.setUniform1i("x_mirror_switch",x_mirror_switch);
+    
+    shader_mixer.setUniform1i("y_mirror_switch",y_mirror_switch);
+
+    shader_mixer.end();
+	framebuffer0.end();
+	
+	//_-_-__---_---___
+	
+	
+	
+	//_----___---------_-_-----_--_-_--_--_
+	
+	
+	
+	framebuffer0.draw(0,0,720,480);
+	
+
+	//_-------------------------------------------
+	
+	
+	pastFrames[abs(fbob-framedelayoffset)-1].begin(); //eeettt
+    
+    ofPushMatrix();
+	ofTranslate(360,240);
+    ofRotateYRad(y_skew);
+    ofRotateXRad(x_skew);
+    framebuffer0.draw(-360,-240);
+	
+	ofPopMatrix();
+	
+    pastFrames[abs(fbob-framedelayoffset)-1].end(); //eeettt
+
+	incIndex();
+   
+	//ofDrawBitmapString("fps =" + ofToString(getFps()), 10, ofGetHeight() - 5 );
+
+//i use this block of code to print out like useful information for debugging various things and/or just to keep the 
+//framerate displayed to make sure i'm not losing any frames while testing out new features.  uncomment the ofDrawBitmap etc etc
+//to print the stuff out on screen
+   ofSetColor(255);
+   string msg="fps="+ofToString(ofGetFrameRate(),2)+" clear switch"+ofToString(clear_switch,5);//+" z="+ofToString(az,5);
+  // ofDrawBitmapString(msg,10,10);
+}
+
+//--------------------------------------------------------------
+void ofApp::exit() {
+	
+	// clean up
+	midiIn.closePort();
+	midiIn.removeListener(this);
+}
+
+
+void ofApp::omx_settings(){
+	
+	settings.sensorWidth = 640;
+    settings.sensorHeight = 480;
+    settings.framerate = 30;
+    settings.enableTexture = true;
+    settings.sensorMode=7;
+    
+    settings.whiteBalance ="Off";
+    settings.exposurePreset ="Off";
+    settings.whiteBalanceGainR = 1.0;
+    settings.whiteBalanceGainB = 1.0;
+	
+	}
+//------------------------------------------------------------
+
+void ofApp::omx_updates(){
+	
+		videoGrabber.setSharpness(100);
+		videoGrabber.setBrightness(40);
+		videoGrabber.setContrast(100);
+		videoGrabber.setSaturation(0);
+	
+	}
+	
+	
+//--------------------------------------------------------------
+void ofApp::newMidiMessage(ofxMidiMessage& msg) {
+
+	// add the latest message to the message queue
+	midiMessages.push_back(msg);
+
+	// remove any old messages if we have too many
+	while(midiMessages.size() > maxMessages) {
+		midiMessages.erase(midiMessages.begin());
+	}
+}
+
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key) {
+	//error-if i decrement fb0_delayamount it always crashes...
+	if (key == '[') {fb0_delayamount += 1;}
+    if (key == ']') {
+		fb0_delayamount = fb0_delayamount-1;
+		if(fb0_delayamount<0){
+			fb0_delayamount=fbob-fb0_delayamount;
+		}//endiffb0
+	}//endifkey
+    
+    //fb1 mix
+    if (key == 'o') {op += .01;}
+    if (key == 'p') {op -= .01;}
+    
+    //fb0 z displace
+    if (key == 'a') {az += .0001;}
+    if (key == 'z') {az -= .0001;}
+    
+    //fb0 x displace
+    if (key == 's') {sx += .0001;}
+    if (key == 'x') {sx -= .0001;}
+    
+    //fb0 y displace
+    if (key == 'd') {dc += .0001;}
+    if (key == 'c') {dc -= .0001;}
+    
+    //fb0 hue attenuate
+    if (key == 'f') {fv += .001;}
+    if (key == 'v') {fv -= .001;}
+    
+    //fb0 saturation attenuate
+    if (key == 'g') {gb += .001;}
+    if (key == 'b') {gb -= .001;}
+    
+    //fb0 brightness attenuate
+    if (key == 'h') {hn += .001;}
+    if (key == 'n') {hn -= .001;}
+    
+    //fb0 mix
+    if (key == 'j') {jm += .01;}
+    if (key == 'm') {jm -= .01;}
+    
+    //fb0 lumakey value
+    if (key == 'k') {kk = ofClamp(kk+.01,0.0,1.0);}
+    if (key == ',') {kk = ofClamp(kk-.01,0.0,1.0);}
+    
+    
+    if (key == 'l') {ll += .01;}
+    if (key == '.') {ll -= .01;}
+    
+    if (key == ';') {fb1_brightx += .01;}
+    if (key == '\'') {fb1_brightx -= .01;}
+    
+    //fb0 rotation
+    if (key == 'q') {qw += .0001;}
+    if (key == 'w') {qw -= .0001;}
+
+
+	//hue chaos1
+    if (key == 'e') {er += .001;}
+    if (key == 'r') {er -= .001;}
+    
+    //hue chaos2
+    if (key == 't') {ty += .01;}
+    if (key == 'y') {ty -= .01;}
+    
+    //hue chaos3
+    if (key == 'u') {ui += .01;}
+    if (key == 'i') {ui -= .01;}
+
+    if (key == '1') {
+
+        //clear the framebuffer if thats whats up
+        framebuffer0.begin();
+        ofClear(0, 0, 0, 255);
+        framebuffer0.end();
+
+      for(int i=0;i<fbob;i++){
+        
+       
+        pastFrames[i].begin();
+        ofClear(0,0,0,255);
+        pastFrames[i].end();
+        
+    
+		}//endifor
+    }
+    
+    
+    if(key=='2'){fb0_b_invert=!fb0_b_invert;}
+    if(key=='3'){fb0_h_invert=!fb0_h_invert;}
+    if(key=='4'){fb0_s_invert=!fb0_s_invert;}
+    
+    if(key=='5'){fb0_v_mirror=!fb0_v_mirror;}
+    if(key=='6'){fb0_h_mirror=!fb0_h_mirror;}
+    
+    if(key=='7'){toroid_switch=!toroid_switch;}
+    
+    if (key == '-') {y_skew += .01;}
+    if (key == '=') {y_skew -= .01;}
+    if (key == '9') {x_skew += .01;}
+    if (key == '0') {x_skew -= .01;}
+    
+	//reset button
+    if (key == '!') {
+		
+		
+	az = 1.0;
+	sx = 0;
+    dc = 0;
+	fv = 1;
+	gb = 1;
+	hn = 1;
+	jm = 0.0;
+	kk = 0.0;
+	ll = 0.0;
+	qw = 0.0;
+
+	er = 1.0;
+	ty = 0.0;
+	ui = 0.0;
+
+	op = 0.0;
+	fb0_delayamount=0;
+	
+	fb0_b_invert=0;
+	fb0_h_invert=0;
+	fb0_s_invert=0;
+	
+	fb0_v_mirror=0;
+	fb0_h_mirror=0;
+	
+	x_skew=0;
+	y_skew=0;
+	
+	framebuffer0.begin();
+    ofClear(0, 0, 0, 255);
+    framebuffer0.end();
+	 
+	for(int i=0;i<fbob;i++){
+        
+       
+        pastFrames[i].begin();
+        ofClear(0,0,0,255);
+        pastFrames[i].end();
+        
+    
+		}//endifor
+		
+	}
+    
+    //no
+   // if(key=='='){inputswitch = !inputswitch;}
+}
+
+void ofApp::midibiz(){
 	for(unsigned int i = 0; i < midiMessages.size(); ++i) {
 
 		ofxMidiMessage &message = midiMessages[i];
 	
-		// draw the last recieved message contents to the screen,
-		// this doesn't print all the data from every status type
-		// but you should get the general idea
-		//stringstream text;
-		//text << ofxMidiMessage::getStatusString(message.status);
-		//while(text.str().length() < 16) { // pad status width
-		//	text << " ";
-		//}
-
-		ofSetColor(127);
 		if(message.status < MIDI_SYSEX) {
 			//text << "chan: " << message.channel;
             if(message.status == MIDI_CONTROL_CHANGE) {
@@ -1012,320 +1340,7 @@ void ofApp::draw() {
 	
 	//end midi biz
 	
-	
-	//control attenuation section
-
-	
-	
-	
-	//ok so here is the plan.  try out 1 framebuffer and test out how far back
-//in time we can go.  the mix will have the following controls
-//hsb for framebuffer 0 and 1
-//positions on framebuffer0 ionly 
-//some kind of chaotic hue mixing for fb0
-//lumakeying on fb0 only
-    
-
-    
-    
-    //----------------------------------------------------------
-    //
-	
-	framebuffer0.begin();
-    shader_mixer.begin();
-
-	//videoGrabber.getTextureReference().draw(0, 0, 320, 640);
-	if(scaleswitch==0){
-		
-		if(inputswitch==0){
-			videoGrabber.draw(0,0,320,240);
-		}
-		
-		if(inputswitch==1){
-			cam1.draw(0,0,320,240);
-		}
 	}
-	
-	if(scaleswitch==1){
-		if(inputswitch==0){
-			videoGrabber.draw(0,0);
-		}
-		
-		if(inputswitch==1){
-			cam1.draw(0,0);
-		}
-	}
-	
-	//videoGrabber.draw(0,0);
-    
-    shader_mixer.setUniformTexture("fb0", pastFrames[(abs(framedelayoffset-fbob-fb0_delayamount-int(c16*(fbob-1.0)))-1)%fbob].getTexture(),1);
-    shader_mixer.setUniformTexture("fb1", pastFrames[(abs(framedelayoffset-fbob)-1)%fbob].getTexture(),2);
-    
-    
-    //mixing variables
-    shader_mixer.setUniform1f("fb0_mix",jm+2.0*c2);
-    shader_mixer.setUniform1f("fb0_lumakey_value",kk+1.01*c1);
-   
-    
-    
-    shader_mixer.setUniform1f("fb1_mix",op+1.1*c6);
-    
-    //fb0_displacment variables
-    shader_mixer.setUniform1f("fb0_xdisplace",sx+.01*c9);
-    shader_mixer.setUniform1f("fb0_ydisplace",dc+.01*c10);
-    shader_mixer.setUniform1f("fb0_zdisplace",az*(1+.05*c11));
-    shader_mixer.setUniform1f("fb0_rotate",qw+.314159265*c12);
-    
-   
-    
-    
-    ofVec3f dummy3f;
-    dummy3f.set(fv*(1.0+.75*c3),gb*(1.0+c4),hn*(1.0+.5*c5));//(1.0+.35*c5));
-    shader_mixer.setUniform3f("fb0_hsbx",dummy3f);
-    
-    
-    dummy3f.set(er*(1.0-c13),ty+.25*c14,ui+.25*c15);
-    //dummy3f.set(1.0,.5,.01);
-    shader_mixer.setUniform3f("fb0_huex",dummy3f);
-    
-    shader_mixer.setUniform1f("fb1_brightx", fb1_brightx+c7);
-    shader_mixer.setUniform1f("cam1_brightx",ll+2.0*c8);
-    
-    
-    shader_mixer.setUniform1i("fb0_b_invert",fb0_b_invert);
-    shader_mixer.setUniform1i("fb0_h_invert",fb0_h_invert);
-    shader_mixer.setUniform1i("fb0_s_invert",fb0_s_invert);
-    
-    shader_mixer.setUniform1i("fb0_h_mirror",fb0_h_mirror);
-    shader_mixer.setUniform1i("fb0_v_mirror",fb0_v_mirror);
-    
-    shader_mixer.setUniform1i("toroid_switch",toroid_switch);
-    
-    shader_mixer.setUniform1f("boost",midiscaler);
-    
-    
-    shader_mixer.setUniform1i("luma_switch",luma_switch);
-    
-    shader_mixer.setUniform1i("x_mirror_switch",x_mirror_switch);
-    
-    shader_mixer.setUniform1i("y_mirror_switch",y_mirror_switch);
-
-    shader_mixer.end();
-	framebuffer0.end();
-	
-	//_-_-__---_---___
-	
-	
-	
-	//_----___---------_-_-----_--_-_--_--_
-	
-	
-	
-	framebuffer0.draw(0,0,720,480);
-	
-
-	//_-------------------------------------------
-	
-	
-	pastFrames[abs(fbob-framedelayoffset)-1].begin(); //eeettt
-    
-    ofPushMatrix();
-	ofTranslate(360,240);
-    ofRotateYRad(y_skew);
-    ofRotateXRad(x_skew);
-    framebuffer0.draw(-360,-240);
-	
-	ofPopMatrix();
-	
-    pastFrames[abs(fbob-framedelayoffset)-1].end(); //eeettt
-
-	incIndex();
-   
-	//ofDrawBitmapString("fps =" + ofToString(getFps()), 10, ofGetHeight() - 5 );
-
-//i use this block of code to print out like useful information for debugging various things and/or just to keep the 
-//framerate displayed to make sure i'm not losing any frames while testing out new features.  uncomment the ofDrawBitmap etc etc
-//to print the stuff out on screen
-   ofSetColor(255);
-   string msg="fps="+ofToString(ofGetFrameRate(),2)+" clear switch"+ofToString(clear_switch,5);//+" z="+ofToString(az,5);
-  // ofDrawBitmapString(msg,10,10);
-}
-
-//--------------------------------------------------------------
-void ofApp::exit() {
-	
-	// clean up
-	midiIn.closePort();
-	midiIn.removeListener(this);
-}
-
-//--------------------------------------------------------------
-void ofApp::newMidiMessage(ofxMidiMessage& msg) {
-
-	// add the latest message to the message queue
-	midiMessages.push_back(msg);
-
-	// remove any old messages if we have too many
-	while(midiMessages.size() > maxMessages) {
-		midiMessages.erase(midiMessages.begin());
-	}
-}
-
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key) {
-	//error-if i decrement fb0_delayamount it always crashes...
-	if (key == '[') {fb0_delayamount += 1;}
-    if (key == ']') {
-		fb0_delayamount = fb0_delayamount-1;
-		if(fb0_delayamount<0){
-			fb0_delayamount=fbob-fb0_delayamount;
-		}//endiffb0
-	}//endifkey
-    
-    //fb1 mix
-    if (key == 'o') {op += .01;}
-    if (key == 'p') {op -= .01;}
-    
-    //fb0 z displace
-    if (key == 'a') {az += .0001;}
-    if (key == 'z') {az -= .0001;}
-    
-    //fb0 x displace
-    if (key == 's') {sx += .0001;}
-    if (key == 'x') {sx -= .0001;}
-    
-    //fb0 y displace
-    if (key == 'd') {dc += .0001;}
-    if (key == 'c') {dc -= .0001;}
-    
-    //fb0 hue attenuate
-    if (key == 'f') {fv += .001;}
-    if (key == 'v') {fv -= .001;}
-    
-    //fb0 saturation attenuate
-    if (key == 'g') {gb += .001;}
-    if (key == 'b') {gb -= .001;}
-    
-    //fb0 brightness attenuate
-    if (key == 'h') {hn += .001;}
-    if (key == 'n') {hn -= .001;}
-    
-    //fb0 mix
-    if (key == 'j') {jm += .01;}
-    if (key == 'm') {jm -= .01;}
-    
-    //fb0 lumakey value
-    if (key == 'k') {kk = ofClamp(kk+.01,0.0,1.0);}
-    if (key == ',') {kk = ofClamp(kk-.01,0.0,1.0);}
-    
-    
-    if (key == 'l') {ll += .01;}
-    if (key == '.') {ll -= .01;}
-    
-    if (key == ';') {fb1_brightx += .01;}
-    if (key == '\'') {fb1_brightx -= .01;}
-    
-    //fb0 rotation
-    if (key == 'q') {qw += .0001;}
-    if (key == 'w') {qw -= .0001;}
-
-
-	//hue chaos1
-    if (key == 'e') {er += .001;}
-    if (key == 'r') {er -= .001;}
-    
-    //hue chaos2
-    if (key == 't') {ty += .01;}
-    if (key == 'y') {ty -= .01;}
-    
-    //hue chaos3
-    if (key == 'u') {ui += .01;}
-    if (key == 'i') {ui -= .01;}
-
-    if (key == '1') {
-
-        //clear the framebuffer if thats whats up
-        framebuffer0.begin();
-        ofClear(0, 0, 0, 255);
-        framebuffer0.end();
-
-      for(int i=0;i<fbob;i++){
-        
-       
-        pastFrames[i].begin();
-        ofClear(0,0,0,255);
-        pastFrames[i].end();
-        
-    
-		}//endifor
-    }
-    
-    
-    if(key=='2'){fb0_b_invert=!fb0_b_invert;}
-    if(key=='3'){fb0_h_invert=!fb0_h_invert;}
-    if(key=='4'){fb0_s_invert=!fb0_s_invert;}
-    
-    if(key=='5'){fb0_v_mirror=!fb0_v_mirror;}
-    if(key=='6'){fb0_h_mirror=!fb0_h_mirror;}
-    
-    if(key=='7'){toroid_switch=!toroid_switch;}
-    
-    if (key == '-') {y_skew += .01;}
-    if (key == '=') {y_skew -= .01;}
-    if (key == '9') {x_skew += .01;}
-    if (key == '0') {x_skew -= .01;}
-    
-	//reset button
-    if (key == '!') {
-		
-		
-	az = 1.0;
-	sx = 0;
-    dc = 0;
-	fv = 1;
-	gb = 1;
-	hn = 1;
-	jm = 0.0;
-	kk = 0.0;
-	ll = 0.0;
-	qw = 0.0;
-
-	er = 1.0;
-	ty = 0.0;
-	ui = 0.0;
-
-	op = 0.0;
-	fb0_delayamount=0;
-	
-	fb0_b_invert=0;
-	fb0_h_invert=0;
-	fb0_s_invert=0;
-	
-	fb0_v_mirror=0;
-	fb0_h_mirror=0;
-	
-	x_skew=0;
-	y_skew=0;
-	
-	framebuffer0.begin();
-    ofClear(0, 0, 0, 255);
-    framebuffer0.end();
-	 
-	for(int i=0;i<fbob;i++){
-        
-       
-        pastFrames[i].begin();
-        ofClear(0,0,0,255);
-        pastFrames[i].end();
-        
-    
-		}//endifor
-		
-	}
-    
-    //no
-   // if(key=='='){inputswitch = !inputswitch;}
-}
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
