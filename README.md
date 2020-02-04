@@ -9,7 +9,7 @@ https://github.com/ex-zee-ex/VIDEO_WAAAVES_1_75,
 lil sized
 https://github.com/ex-zee-ex/lil_waaaves
 
-How to install!  Easiest way (if yr not adept at both openFrameworks and navigating in raspbian) is to just flash an sd card with the image located here https://drive.google.com/open?id=1ly_PBq4DDyxd6zYmoqIl_yF_aaYJZQcp and plug everything in and power up! 
+How to install!  Easiest way (if yr not adept at both openFrameworks and navigating in raspbian) is to just flash an sd card with the image located here https://drive.google.com/open?id=1r8gNbfShvLauUBeen6kDB16ZjDvDUbBX and plug everything in and power up! 
 components list
 
 Raspberry Pi 3b (fairly sure 3b+ works fine as well)
