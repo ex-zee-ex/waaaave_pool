@@ -12,7 +12,7 @@ https://github.com/ex-zee-ex/lil_waaaves
 How to install!  Easiest way (if yr not adept at both openFrameworks and navigating in raspbian) is to just flash an sd card with the image located here https://drive.google.com/open?id=1r8gNbfShvLauUBeen6kDB16ZjDvDUbBX and plug everything in and power up! 
 components list
 
-Raspberry Pi 3b (fairly sure 3b+ works fine as well)
+Raspberry Pi 3b (fairly sure 3b+ works fine as well.  edit: some do, some dont, will work on cross compatiblity when time permits)
 
 micro sd card minimum 8g
 
@@ -25,6 +25,8 @@ a midi controller for input (nanokontrol 2 recommended as all the default contro
 OR a usb keyboard for controls (much cheaper option though a bit less fun than knobs tbh)
 
 some sort of usb micro sd card adapter to write the image
+
+1/8th inch TRRS to rca breakout cable for composite video output.  https://www.mycablemart.com/store/cart.php?m=product_detail&relate=1&p=6026 seems like a good choice!
 
 optional: Picapture sd1 capture card for sd video
 
