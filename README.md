@@ -45,15 +45,25 @@ keyboard controls
 for each pair x/y means that the corresponding alphanumerical keys on a keyboard increment and decrement the values
 
 a/z - zoom in/out  
+
 s/x - framebuffer0 x displacement  
+
 d/c - framebuffer0 y displacement  
+
 f/v - framebuffer0 hue attenuation  
+
 g/b - framebuffer0 saturation atte!uation  
+
 h/n - framebuffer0 brightness attentuation  
+
 j/m - frambuffer0 mix  
+
 k/, - framebuffer0 lumakey  
+
 [/] - framebuffer0 change delay amount  
+
 q/w - framebuffer0 rotate  
+
 o/p - temporal filter
 
 ;/' - temporal 'filter resonance'
