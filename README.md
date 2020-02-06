@@ -54,12 +54,18 @@ j/m - frambuffer0 mix
 k/, - framebuffer0 lumakey  
 [/] - framebuffer0 change delay amount  
 q/w - framebuffer0 rotate  
-o/p - temporal filter  
+o/p - temporal filter
+
 ;/' - temporal 'filter resonance'
+
 l/. - input attenuate
+
 e/r - chaotic hue mod
+
 t/y - chaotic hue lfo
+
 u/i - chaotic hue offset
+
 -/= - y skew
 
 9/0 - x skew
