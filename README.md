@@ -9,8 +9,18 @@ https://github.com/ex-zee-ex/VIDEO_WAAAVES_1_75,
 lil sized
 https://github.com/ex-zee-ex/lil_waaaves
 
-How to install!  Easiest way (if yr not adept at both openFrameworks and navigating in raspbian) is to just flash an sd card with the image located here https://drive.google.com/open?id=1r8gNbfShvLauUBeen6kDB16ZjDvDUbBX and plug everything in and power up! 
+How to install!  Easiest way (if yr not adept at both openFrameworks and navigating in raspbian) is to just flash an sd card with the appropriate image for your video standard and plug everything in and power up!
+
+image for NTSC
+
+https://drive.google.com/open?id=1r8gNbfShvLauUBeen6kDB16ZjDvDUbBX
+
+for PAL 
+
+https://drive.google.com/open?id=1wFxnRCTPwVjB3DsjzN7t_d5pV1JQVEvo
+
 components list
+
 
 Raspberry Pi 3b (fairly sure 3b+ works fine as well.  edit: some do, some dont, will work on cross compatiblity when time permits)
 
