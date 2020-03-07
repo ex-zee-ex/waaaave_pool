@@ -19,7 +19,7 @@
 bool scaleswitch=1;
 
 //0 is picaputre, 1 is usbinput
-bool inputswitch=0;
+bool inputswitch=1;
 
 //0 is no midi controller input, 1 is midi controller
 bool midiswitch=0;
