@@ -261,5 +261,14 @@ chaotic hue lfo     (37,53,69)
 chaotic hue offset  (38,54,70)
 
 
+
+TROUBLESHOOTING
+FIRST THINGS FIRST:  make sure every component is plugged in (usb camera and usb midi controller/keyboard and the video cable) before you plug in the power supply!  This device does not support hotswapping so if you want to try different sources its best to power down and then swap them out.  If you have multiple midi controllers or multiple usb camera sources plugged in only one can be used with the default set up.  
+
+”I have no output when using the analog video” 
+There are two main reasons why this might happen.  1. You don’t have the right kind of breakout cable or 2. There is something goofy happening with the configuration settings.  There is a simple way to diagnose which issue you are having.  Power up the unit with the composite breakout cable plugged in and wait about 30 seconds, then try plugging in an hdmi cable and see if you get output that way.  If you are getting hdmi output without an hdmi cable plugged in before powering on then it is an issue with config.txt, if not then it is an issue with the breakout cable! read on for solutions to both of these issues.
+BREAKOUT CABLES: This unit requires a TRRS (tip ring ring sleeve) 1/8th inch to 3 rca cable like one of these (CTIA is one name for this standard, many cables designed for zunes and a generation or so of ipods follow this standard but not much other than raspberry pis do nowadays that I am aware of!) . Here is some information on rigging things up in a more DIY manner.  Note that many people have been able to use OMTP standard cables by going out thru the red rca cable.  Using video signals through audio cables works like 95 percent of the time but every so often you can come across a situation where it wont so heads up on that front.   
+CONFIGURATION SETTINGS;  there is a text file config.txt which can be accessed by pulling out the sd card from the back and plugging it into a computer via some kind of usb adapter!  You will know that this needs to be acessed and double check the HDMI hotplug settings if you have the unit powered on and have no analog video out and are able to plug in an hdmi cable and get video out while it is still running.    
+
 join the video_waaaves fb group to keep up to date on this and other softwares and hardwares that i make!
 https://www.facebook.com/groups/440566853501750
