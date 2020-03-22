@@ -150,7 +150,32 @@ if you are using the nanokontrol2 controller then you will notice for the slider
 
 16.  Delay time (U) (1-60)  Delay time is measured in Frames.  Waaave_pool operates at 30 frames per second so there is a total of 2 seconds of delay to draw from.  Delays will behave quite differently depending on if the framebuffer is fed from the input or from the final output.
 
+A. Fb0 Brightness Invert. 
+Switches on and off Brightness Inversion on fb0.  This multiplies the attenuated value from knob 5 by -1.
 
+B. Fb0 Saturation Invert.
+Switches on and off Saturation Inversion on fb0 same as A does to brightness!
+
+C. Fb0 Hue Invert.
+Switches on and off hue Inversion on fb0 , and doesn’t seem to work quite right yet but I’ll keep working on it!
+
+D. Fb0 Horizontal Mirror.
+These switches are mostly self explanatory arent they?
+
+E. Fb0 Vertical Mirror.
+Like you get the point by now.  its a toggle how complicated can it be? 
+
+F. Toroidal Universe.
+Ok this is worth getting into a little bit.  When you switch the feedback wraps around the screen in various ways.  If something goes off the left side of the screen it will pop back over on the right side and verce visa.  Same thing for top and bottom edges.  When you zoom out super far the toroidal universe will fractalize everything. When you rotate in toroidal various kinds of mirrorings and wrapping swill happen at the edges.  Lots of Fun!
+
+G. Alternate Horizontal Mirror.
+Switches on a different mode for fb0 horizontal mirroring where the x displace slider also controls where the line of symmetry lays.  Good to mix things up if you like symmetries but dislike having radial compositions
+
+H. Alternate Vertical Mirror.
+you got this, right?
+
+I.  Luma key switch.
+This switch toggles back and forth between luma keying into the whites and luma keying into the blacks.  
 
 
 
