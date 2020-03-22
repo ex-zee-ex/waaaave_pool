@@ -17,7 +17,7 @@ https://drive.google.com/open?id=1r8gNbfShvLauUBeen6kDB16ZjDvDUbBX
 
 for PAL 
 
-https://drive.google.com/open?id=1wFxnRCTPwVjB3DsjzN7t_d5pV1JQVEvo
+https://drive.google.com/open?id=1NRAtnwgg4Qb_DpktbGL0417CbcAsfyYt
 
 components list
 
