@@ -111,7 +111,7 @@ u/i - chaotic hue offset
 
 if you are using a midi controller then these keyboard controls will work as well but yall should take into account that using both the midi controller and the usb keyboard at the same time can do some really confusing stuff in terms how keyboard entry can offset ranges of the midi interfaces!  so maybe fun if you like to be confused but just a heads up on that front.
 
-![Image description](https://github.com/ex-zee-ex/pictures/blob/master/78.jpg)
+![Image description](https://github.com/ex-zee-ex/pictures/blob/master/20200206_122907.jpg)
 
 (notes: parenthesis (U) and (B) after the controls means Unipolar and Bipolar respectively.  unipolar means that values go from 0-1, bipolar means that values go from -1 to 1.  this means that if you want to set values to 0 on a unipolar knob then you turn it all of the way to the left and if you want to set values to 0 on a bipolar knob you set it at 12 o clock.  Unipolar 0 on a slider means all of the way down, bipolar 0 means exactly in the middle.  Most of these parameters we will assume are normalized, which means we will think of 0 as being all of the way off and 1 as being 100 percent on.  This can get a little strange because some values are set so that they actually go from like -200 percent off to +200 percent on but bear with me, it is all happening for reasons!  if the default parameter set is anything other than (0,1) or (-1,1) it will be shown in parenthesis as well.  the framebuffer delay channel will be henceforth referred to as fb0)
 
