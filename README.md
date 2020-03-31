@@ -19,6 +19,13 @@ for PAL
 
 https://drive.google.com/open?id=1NRAtnwgg4Qb_DpktbGL0417CbcAsfyYt
 
+
+and/or if you just want to buy one I make and sell various versions of this over here
+
+https://www.etsy.com/shop/VIDEOWAAAVES
+
+
+
 components list
 
 
@@ -32,6 +39,8 @@ a usb camera input (logitech c310 or similar logitech camera capable of 640x480 
 
 a midi controller for input (nanokontrol 2 recommended as all the default controls are built around that model)
 
+**(for nanokontrol2 to operate at its best download the nanokontrol scene data file and use the Korg Kontrol Editor to update the midi info on the nanokontrol otherwise buttons wont work right and a bunch of the knobs will be momentary instead of toggles)
+
 OR a usb keyboard for controls (much cheaper option though a bit less fun than knobs tbh)
 
 some sort of usb micro sd card adapter to write the image
@@ -41,7 +50,13 @@ some sort of usb micro sd card adapter to write the image
 optional: Picapture sd1 capture card for sd video
 
 
-(for nanokontrol2 to operate at its best download the nanokontrol scene data file and use the Korg Kontrol Editor to update the midi info on the nanokontrol otherwise buttons wont work right and a bunch of the knobs will be momentary instead of toggles)
+Note:  I don't officially support using varieties of USB capture devices with this unit!  I am not saying this to discourage anyone from actually going out and doing that of course, there are definitely some out there that work and i have been told that this
+
+https://www.ebay.com/p/1587597910
+
+works well for those purposes.  The thing is that you are pretty much guaranteed some kind of unreliable glitchy behavior at some point in time while using these kinds of units (freezing, framedropping, compression blotching, irregular latency etc etc).  So what i mean by "i don't support these" is that if you have issues with running yr waaave pools with these things, theres pretty much nothing i can do to help you!  Not like "oh i refuse to help you because you didn't spend the money to purchase the capture edition i make and i am a vindictive git" but more like "yo i don't have any access to the firmware in those fucking things and theres literally nothing i can do to make usb capture devices like that work reliably they are just little black boxes of potential glitches to me"
+
+
 
 ![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool4.png)
 
