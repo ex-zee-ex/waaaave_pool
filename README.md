@@ -285,5 +285,19 @@ There are two main reasons why this might happen.  1. You don’t have the right
 BREAKOUT CABLES: This unit requires a TRRS (tip ring ring sleeve) 1/8th inch to 3 rca cable like one of these (CTIA is one name for this standard, many cables designed for zunes and a generation or so of ipods follow this standard but not much other than raspberry pis do nowadays that I am aware of!) . Here is some information on rigging things up in a more DIY manner.  Note that many people have been able to use OMTP standard cables by going out thru the red rca cable.  Using video signals through audio cables works like 95 percent of the time but every so often you can come across a situation where it wont so heads up on that front.   
 CONFIGURATION SETTINGS;  there is a text file config.txt which can be accessed by pulling out the sd card from the back and plugging it into a computer via some kind of usb adapter!  You will know that this needs to be acessed and double check the HDMI hotplug settings if you have the unit powered on and have no analog video out and are able to plug in an hdmi cable and get video out while it is still running.    
 
+
+"i want to make my own capture edition/use one of the images i got from github with a capture edition"
+Ok so all of these default images i provide are default set to grab usb camera input, any one of them can be upgraded to picapture sd1 inputs tho!  you will need a usb keyboard and probably is helpful to have a usb mouse as well.  connect your capture hat to the waaave pool as instructed on https://lintestsystems.com/documentation and then boot up the waaave pool with the image you wish to swap to picap.  this is best done on an lcd screen thru the hdmi out. for the purposes of this guide i will use the waaave_pool as an example but these steps work the same with any image
+
+1. once it boots up and is running hit "esc" on the keyboard and you will exit to a desktop environment.  click on or select the folder icon near the top of the screen and navigate to home/pi/openFrameworks/apps/myApps/WAAAVE_POOL_MAIN/src/ and then within src you will double click on ofApp.cpp.  
+
+2.  ofApp.cpp will open up in a text edition environment.  scroll down a tiny bit and you will see a line that says "bool inputswitch=1", you will delete the 1 and replace it with 0.  hit ctrl-s to save the changes. don't change anything else in this code (unless you know how to program in c++ and want to try modding things out!)
+
+3. close the text editor and back in the folder navigate up two levels until you are in home/pi/openFrameworks/apps/myApps.  right click on WAAAVE_POOL_MAIN folder and select "open in terminal"
+
+4. a terminal opens up, waaave pool will try to automatically run, hit esc to cancel that operation (might take like 30 seconds for this).  once you have a terminal prompt that you can type into enter "make", wait for all the coding things to execute, and then when you have a terminal prompt once again, plug a video source into the capture card and enter "make run" into the terminal
+
+
+
 join the video_waaaves fb group to keep up to date on this and other softwares and hardwares that i make!
 https://www.facebook.com/groups/440566853501750
