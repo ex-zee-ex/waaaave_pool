@@ -1,0 +1,49 @@
+how to change from usb (default setting of this and all the 
+waaave pool distro firmwares) to picapture sd inputs
+
+1.click on the folder icon at the top left of the 
+screen and navigate to 
+pi/openFrameworks/apps/myApps/WAAAVE_POOL_MAIN/src/ofApp.cpp
+double click on it, it will open up in this text editor.
+scroll down a tiny bit and you will see the lines
+
+	//0 is picaputre, 1 is usbinput
+	bool inputswitch=0;
+	
+change the number 0 to the number 1 so it looks like
+
+	//0 is picaputre, 1 is usbinput
+	bool inputswitch=1;	
+
+hit ctrl-s on your keyboard and then in the folder navigator hit the up arrow twice and then
+right click on WAAAVE_POOL_MAIN and select 'open in terminal'
+once it is opened in terminal enter 'make' and hit enter
+a bunch of text should scroll for about 1 minute and then you will see
+
+
+make[2]: Leaving directory '/home/pi/openFrameworks/apps/myApps/WAAVE_POOOL_MAIN'
+make[1]: Leaving directory '/home/pi/openFrameworks/apps/myApps/WAAVE_POOOL_MAIN'
+pi@raspberrypi:~/openFrameworks/apps/myApps/WAAVE_POOOL_MAIN $ 
+
+type 'reboot', hit enter and the waaave pool should start up again with the picapture sd
+enabled by default.  note that you will need to have a video source coming in to
+the capture card in order for the waaave pool to start up correctly.  you will
+know that a source is detected if there is a tiny blue led lit
+up adjacent to the s-video port.
+
+to switch back to usb input simple repeat the above steps and plug
+edit the line to say 	
+
+	//0 is picaputre, 1 is usbinput
+	bool inputswitch=0;
+	
+once again.  	
+
+
+*note* the script i'm using to auto run the waaave_pool code
+on start up has a side effect where like it'll auto run when
+like terminals and other kinds of files are opend.  all you need
+to do is hit escape whenever this happens and continue on with
+the instructions.  modifying this script is kind of for 
+medium advanced folks, if interested do a search on '.bashrc
+auto run raspbian' and you'll see what i did.

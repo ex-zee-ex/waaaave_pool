@@ -1,0 +1,11 @@
+how to disable splash screen.  
+1.open a terminal and esc out of the auto running waaave pool.
+2.enter 'gksudo pcmanfm' to open up a file manager window with 
+priveleges.
+3. navigate to /usr/share/plymouth/themes/pix
+4. rename 'splash.png' to something else like 'splash0.png'
+5. rename 'black.png' to 'splash.png'
+6. ok now restart and double check that it worked!
+I find the splash screen to be useful for troubleshooting and for
+diagnostics but understand that its not preferable for if one
+needs to restart their system during a live show!
