@@ -47,7 +47,7 @@ public:
 	
 	
 	ofShader shader_mixer;
-	ofShader shader_blur;
+	
     
     
     ofFbo framebuffer0;

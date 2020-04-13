@@ -28,7 +28,7 @@ uniform float cam1_brightx;
 
 uniform vec3 fb0_rescale;
 
-uniform float boost;
+
 
 
 
@@ -142,19 +142,13 @@ void main()
 	
 	
 	
-	//trying to offset the decreased camera quality when a the nanonstudio midi controller is connected
-	//change the 2.0 to a variable controlled by the nanocontrol
-	//cam1_color=clamp(2.0*cam1_color,0.0,1.0);
 	
-	cam1_color =pow(cam1_color,vec4(boost));
+	
+
 	
 	vec3 cam1_color_hsb= rgb2hsb(vec3(cam1_color.r,cam1_color.g,cam1_color.b));
 	
-	//cam1_color_hsb.y=clamp(cam1_color_hsb.y+cam1_brightx*.25,0.0,1.0);
-	//cam1_color_hsb.z=clamp(cam1_color_hsb.z+cam1_brightx,0.0,1.0);
-	
-	cam1_color_hsb.z=clamp(cam1_color_hsb.z*(1.0+cam1_brightx),0.0,1.0);
-	
+	cam1_color_hsb.z=pow(cam1_color_hsb.z,(1.0+cam1_brightx));
 	
 	
 	cam1_color=vec4(vec3(hsb2rgb(vec3(cam1_color_hsb.x,cam1_color_hsb.y,cam1_color_hsb.z))),1.0);
@@ -163,7 +157,7 @@ void main()
 	
 	vec4 fb1_color = texture2D(fb1, texCoordVarying);
 	//trying to offset the decreased camera quality when a midi controller is connected
-	fb1_color=clamp(boost*fb1_color,0.0,1.0);
+	//fb1_color=clamp(boost*fb1_color,0.0,1.0);
 	
 	//coordinate zones
 	
@@ -228,8 +222,7 @@ void main()
 		if(fb0_coord.y<0.0){fb0_color=vec4(0.0);}
 	}//endiftoroidswtich
 	
-	//fb0_color=pow(fb0_color,vec4(2));
-	//fb0_color.rgb=fb0_color.rgb+vec3(.01);
+	
 
 	//convert to hsb
 	
@@ -249,8 +242,13 @@ void main()
 	//most likely because power supplied to the camera is reduced as well so might as well just work with it
 	//looks like out of the two that i have tried thus far, the nanostudio draws way more power than the nanokontrol
 	//will need to have more folks help with the testing here
+	
+	//fb0_color_hsb.y=clamp(fb0_color_hsb.y*fb0_hsbx.y,0.0,1.0);
+	
+	
 	fb0_color_hsb.y=clamp(fb0_color_hsb.y*fb0_hsbx.y,0.0,1.0);
-	fb0_color_hsb.z=clamp(boost*fb0_color_hsb.z*fb0_hsbx.z,0.0,1.0);
+	
+	fb0_color_hsb.z=clamp(fb0_color_hsb.z*fb0_hsbx.z,0.0,1.0);
 	
 	
 	if(fb0_b_invert==1){fb0_color_hsb.z=1.0-fb0_color_hsb.z;}
@@ -263,13 +261,14 @@ void main()
 	
 	vec3 fb1_color_hsb= rgb2hsb(vec3(fb1_color.r,fb1_color.g,fb1_color.b));
 	
+	fb1_color_hsb.z=clamp(fb1_color_hsb.z*(1.0+.5*fb1_brightx),0.0,1.0);
 	fb1_color_hsb.y=clamp(fb1_color_hsb.y*(1.0+.25*fb1_brightx),0.0,1.0);
-	fb1_color_hsb.z=clamp(boost*fb1_color_hsb.z*(1.0+.5*fb1_brightx),0.0,1.0);
+	
 	
 	fb1_color=vec4(vec3(hsb2rgb(vec3(fb1_color_hsb.x,fb1_color_hsb.y,fb1_color_hsb.z))),1.0);
 	
 	
-	//fb1_color=fb1_color*(vec4(1.0+fb1_brightx,1.0+fb1_brightx,1.0+fb1_brightx,0.0));
+	
 	
 	color=mix(cam1_color, fb0_color,fb0_mix);
 	

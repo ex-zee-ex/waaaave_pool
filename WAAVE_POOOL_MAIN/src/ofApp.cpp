@@ -14,20 +14,21 @@
 
 //flip this switch to try different scalings
 //0 is 320 1 is 640
-//if you reduce scale you can up the total delay time to
+//if you reduce scale to 320 you can up the total delay time to
 //about 4 seconds/ 120 frames
+//so try that out sometime and see how that feels!
 bool scaleswitch=1;
+const int fbob=60;
+//const int fbob=120;
 
 //0 is picaputre, 1 is usbinput
 bool inputswitch=1;
 
-//0 is no midi controller input, 1 is midi controller
-bool midiswitch=0;
-
-//at the moment there is a brightness reduction that comes along with
-//having the midi controller involved so if we have one then
-//we send a little boost into the shaders.
-int midiscaler=1;
+//0 is wet (framebuffer fed from final output, internal
+//feedback mode
+//1 is dry (framebuffer fed direct from camera input,
+//traditional video delay mode
+bool wet_dry_switch=1;
 
 float az = 1.0;
 float sx = 0;
@@ -144,7 +145,7 @@ bool huexz_2=FALSE;
 //30 while fps is set to 30 means 1 second of video will be stored in memory  
 //75 seems to work ok with usb cams but the capture device might need a little more memory
 
-const int fbob=60;
+
 
 //const int fbob=2;
 
@@ -168,10 +169,12 @@ void incIndex()  // call this every frame to calc the offset eeettt
 void ofApp::setup() {
 	//ofSetVerticalSync(true);
 
-   ofSetFrameRate(30);
+	ofSetFrameRate(30);
     
     ofBackground(0);
-   
+	
+	ofToggleFullscreen();
+	
     ofHideCursor();
 	
 		
@@ -225,13 +228,11 @@ void ofApp::setup() {
     }//endifor
 
 
-	if(midiswitch==1){
-		midiscaler=2;
-	}
+	
 	
 	shader_mixer.load("shadersES2/shader_mixer");
 	
-	shader_blur.load("shadersES2/shader_blur");
+	
 	
 	// print input ports to console
 	midiIn.listInPorts();
@@ -343,7 +344,7 @@ void ofApp::draw() {
     
     
     ofVec3f dummy3f;
-    dummy3f.set(fv*(1.0+.75*c3),gb*(1.0+c4),hn*(1.0+.5*c5));//(1.0+.35*c5));
+    dummy3f.set(fv*(1.0+.75*c3),gb*(1.0+.5*c4),hn*(1.0+.5*c5));//(1.0+.35*c5));
     shader_mixer.setUniform3f("fb0_hsbx",dummy3f);
     
     
@@ -352,7 +353,7 @@ void ofApp::draw() {
     shader_mixer.setUniform3f("fb0_huex",dummy3f);
     
     shader_mixer.setUniform1f("fb1_brightx", fb1_brightx+c7);
-    shader_mixer.setUniform1f("cam1_brightx",ll+2.0*c8);
+    shader_mixer.setUniform1f("cam1_brightx",ll+4.0*c8);
     
     
     shader_mixer.setUniform1i("fb0_b_invert",fb0_b_invert);
@@ -364,7 +365,7 @@ void ofApp::draw() {
     
     shader_mixer.setUniform1i("toroid_switch",toroid_switch);
     
-    shader_mixer.setUniform1f("boost",midiscaler);
+    
     
     
     shader_mixer.setUniform1i("luma_switch",luma_switch);
@@ -384,7 +385,7 @@ void ofApp::draw() {
 	
 	
 	
-	framebuffer0.draw(0,0,720,480);
+	framebuffer0.draw(0,0,ofGetScreenWidth(),ofGetScreenHeight());
 	
 
 	//_-------------------------------------------
@@ -393,11 +394,33 @@ void ofApp::draw() {
 	pastFrames[abs(fbob-framedelayoffset)-1].begin(); //eeettt
     
     ofPushMatrix();
-	ofTranslate(360,240);
+	ofTranslate(framebuffer0.getWidth()/2,framebuffer0.getHeight()/2);
     ofRotateYRad(y_skew);
     ofRotateXRad(x_skew);
-    framebuffer0.draw(-360,-240);
+    
+    if(wet_dry_switch==0){
+		
+		
+		
+		
+		if(inputswitch==0){
+			videoGrabber.draw(-framebuffer0.getWidth()/2,-framebuffer0.getHeight()/2,framebuffer0.getWidth(),framebuffer0.getHeight());
+		}
+		
+		if(inputswitch==1){
+			cam1.draw(-framebuffer0.getWidth()/2,-framebuffer0.getHeight()/2,framebuffer0.getWidth(),framebuffer0.getHeight());
+		}
 	
+		
+		}//endifwetdry0
+	
+		
+	if(wet_dry_switch==1){
+		
+		framebuffer0.draw(-framebuffer0.getWidth()/2,-framebuffer0.getHeight()/2);
+		
+		
+		}//endifwetdry1
 	ofPopMatrix();
 	
     pastFrames[abs(fbob-framedelayoffset)-1].end(); //eeettt
@@ -441,7 +464,7 @@ void ofApp::omx_settings(){
 
 void ofApp::omx_updates(){
 	
-		videoGrabber.setSharpness(100);
+		videoGrabber.setSharpness(50);
 		videoGrabber.setBrightness(40);
 		videoGrabber.setContrast(100);
 		videoGrabber.setSaturation(0);
@@ -908,6 +931,18 @@ void ofApp::midibiz(){
 					x_skew+=.00001;
                 }
                 
+                
+                if(message.control==71){
+					if(message.value==127){
+						wet_dry_switch=FALSE;
+					}
+					
+					if(message.value==0){
+						wet_dry_switch=TRUE;
+					}
+					
+                }
+                
                 //---------------------
                 
                 
@@ -1015,56 +1050,58 @@ void ofApp::midibiz(){
                 
                 
                 
+                
+                
                 //nanokontrol2 controls
-                 //c1 maps to fb0 hue attenuation
+                 //c1 maps to fb0 lumakey
                 if(message.control==16){
                   //  c1=(message.value-63.0)/63.0;
                      c1=(message.value)/127.00;
                     
                 }
                 
-                //c2 maps to fb0 saturation attenuation
+                //c2 maps to fb0 mix
                 if(message.control==17){
                     c2=(message.value-63.0)/63.0;
                    //   c2=(message.value)/127.00;
                     
                 }
                 
-                //c3 maps to fb0 brightness attenuation
+                //c3 maps to fb0 huex
                 if(message.control==18){
                     c3=(message.value-63.0)/63.00;
                     //  c3=(message.value)/127.00;
                 }
                 
-                //c4 maps to fb0_mix amount
+                //c4 maps to fb0 satx
                 if(message.control==19){
                      c4=(message.value-63.0)/63.00;
                    // c4=(message.value)/127.00;
                    
                 }
                 
-                //c5 maps to fb0 x displace
+                //c5 maps to fb0 brightx
                 if(message.control==20){
                      c5=(message.value-63.0)/63.00;
                   //  c5=(message.value)/127.00;
                   
                 }
                 
-                //c6 maps to fb0 y displace
+                //c6 maps to temporal filter
                 if(message.control==21){
                     c6=(message.value-63.0)/63.0;
                      // c6=(message.value)/127.00;
                 }
                 
-                //c7 maps to fb0 z displace
+                //c7 maps to temporal filter resonance
                 if(message.control==22){
-                    c7=(message.value-63.0)/63.0;
-                   //   c7=(message.value)/127.00;
+                    //c7=(message.value-63.0)/63.0;
+                      c7=(message.value)/127.00;
                 }
                 
-                //c8 maps to fb0 luma key value
+                //c8 maps to brightx
                 if(message.control==23){
-                    // c8=(message.value-63.0)/63.00;
+                     //c8=(message.value-63.0)/63.00;
                     c8=(message.value)/127.0;
                    
                 }
@@ -1310,6 +1347,10 @@ void ofApp::midibiz(){
 					clear_switch=0;
                 }
                 
+                 if(message.control==59){
+						
+						x_skew=y_skew=c1=c2=c3=c4=c5=c6=c7=c8=c9=c10=c11=c12=c13=c14=c15=c16=0.0;
+                }
                  
                 
                

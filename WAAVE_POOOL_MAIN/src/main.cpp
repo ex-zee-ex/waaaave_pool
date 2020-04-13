@@ -18,7 +18,19 @@ int main(){
 
 	ofGLESWindowSettings settings;
 	settings.glesVersion=2;
+	
+	//here is where you change output resolutions
+	
+	//CEA mode 2
 	settings.setSize(720,480);
+	
+	//CEA mode 4
+	//settings.setSize(1280,720);
+	
+	//CEA mode 16
+	//settings.setSize(1920,1080);
+	
+	
 	ofCreateWindow(settings);
     
 	// this kicks off the running of my app
