@@ -13,7 +13,7 @@ How to install!  Easiest way (if yr not adept at both openFrameworks and navigat
 
 image for NTSC
 
-https://drive.google.com/open?id=1r8gNbfShvLauUBeen6kDB16ZjDvDUbBX
+https://drive.google.com/open?id=16CKAS1VSZWPdKDwzQbPbGq5H3yTGeiQ3
 
 for PAL 
 
@@ -66,6 +66,19 @@ Raspbian Stretch and openFrameworks 0.10 are the recommended environments, any o
 To build openFrameworks run through the steps here https://openframeworks.cc/setup/raspberrypi/o.  Once you have openFrameworks installed and working you will also need to install the ofxMidi addon https://github.com/danomatika/ofxMidi and the ofxOMXCamera addon https://github.com/langolierz/ofxOMXCamera.  the WAAAVE_POOL_MAIN folder will need to be downloaded and moved into the myApps folder within the openFrameworks folder 
 
 ![Image description](https://github.com/ex-zee-ex/pictures/blob/master/waaavepool3.png)
+
+UPDATE LIST FOR WAAAVE_POOL 1.3!
+
+-some of the HSB and Chaotic Hue controls have been cleaned up and seem to work a bit more how i had planned.  experiment with all of these and their interactions with the temporal filter and you will notice some differences
+
+-midi cc 23 (input enhance) now works as a contrast knob.  also pretty great for feedback things and/or to help out with keying!
+
+-midi cc 71 (the r button right next to the delay time control slider) now switches the feedback buffer off, this means that you can still have delayed video but it won't do crazy feedback stuff.  all the other controls will work exactly the same but you will notice way different stuffs happening. this is more like what one would immediately think of in terms of a video delay pedal.  definitely very fun to use with camera feedback.  
+
+-midi cc 59 (the > button near on the top left of the nanokontrol) is now parameter reset.  note that there will be very abrupt motions that will have chaotic results in the feedback whenever u next move every single one of the controls unless they were perfectly zeroed out before you hit the parameter reset.  and if you had the parameters already perfectly zeroed out already then you wouldn't need to do a paramter reset! 
+
+-if you plug in a usb keyboard and mouse and hit escape while the waaave pool is running you will find instructions on the desktop for various fun stuffs like how to try out 720p or 1080p output and how to edit the firmware to accept picapture sd1 input!
+
 
 
 keyboard controls
