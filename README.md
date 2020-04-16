@@ -13,7 +13,7 @@ How to install!  Easiest way (if yr not adept at both openFrameworks and navigat
 
 image for NTSC
 
-https://drive.google.com/open?id=16CKAS1VSZWPdKDwzQbPbGq5H3yTGeiQ3
+https://drive.google.com/file/d/1-gDZfiHU1DMbmAB1pQJ1KJiOKaUg_GLh
 
 for PAL 
 
