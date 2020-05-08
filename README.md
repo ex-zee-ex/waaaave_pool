@@ -24,6 +24,8 @@ and/or if you just want to buy one I make and sell various versions of this over
 https://www.etsy.com/shop/VIDEOWAAAVES
 
 
+![Image description](https://github.com/ex-zee-ex/pictures/blob/master/wp_sticker.png)
+
 
 components list
 
