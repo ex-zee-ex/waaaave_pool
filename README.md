@@ -80,7 +80,9 @@ UPDATE LIST FOR WAAAVE_POOL 1.3!
 
 -if you plug in a usb keyboard and mouse and hit escape while the waaave pool is running you will find instructions on the desktop for various fun stuffs like how to try out 720p or 1080p output and how to edit the firmware to accept picapture sd1 input!
 
-
+nanokontrol2 guide!  
+![Image description](https://github.com/ex-zee-ex/waaaave_pool/blob/master/wp_nanokontrol_guide.jpg)
+thanks to Alex Tuthill-Preus and Benjamin Roberts for putting this together!
 
 keyboard controls
 for each pair x/y means that the corresponding alphanumerical keys on a keyboard increment and decrement the values
