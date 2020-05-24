@@ -314,6 +314,9 @@ Ok so all of these default images i provide are default set to grab usb camera i
 4. a terminal opens up, waaave pool will try to automatically run, hit esc to cancel that operation (might take like 30 seconds for this).  once you have a terminal prompt that you can type into enter "make", wait for all the coding things to execute, and then when you have a terminal prompt once again, plug a video source into the capture card and enter "make run" into the terminal
 
 
+to 3d print a 1.5u panel for rack mounting yr waaaave pool/sm/phosphorm
+https://www.thingiverse.com/thing:4391023?fbclid=IwAR246w78AGM9WanoIb56zfWSBCQiwyNJMsAF5kNhfARwdnjmUvZeB-ONPbY
+
 
 join the video_waaaves fb group to keep up to date on this and other softwares and hardwares that i make!
 https://www.facebook.com/groups/440566853501750
