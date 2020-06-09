@@ -37,6 +37,9 @@ micro sd card minimum 8g
 raspberry pi power supply (5v 2.5a micro usb connection)
 
 a usb camera input (logitech c310 or similar logitech camera capable of 640x480 recommended)
+*here is a pretty dank list of usb cameras that will most likely work in some shape or form*
+_tho many will be somewhat glitch as noted in the list_
+https://elinux.org/RPi_USB_Webcams?fbclid=IwAR0nIdKDqHgn5gXrJVs_81nDxcjjmM-sjHves2P_DQKcRedGjF9vmSVk3mw
 
 a midi controller for input (nanokontrol 2 recommended as all the default controls are built around that model)
 
