@@ -14,6 +14,7 @@
 #include "ofxMidi.h"
 #include "ofxOMXVideoGrabber.h"
 
+
 class ofApp : public ofBaseApp, public ofxMidiListener {
 	
 public:
@@ -51,11 +52,14 @@ public:
     
     
     ofFbo framebuffer0;
-    ofFbo framebuffer1;
+    ofFbo dry_framebuffer;
     
     
     ofVideoGrabber cam1;
     
     ofxOMXCameraSettings settings;
     ofxOMXVideoGrabber videoGrabber;
+    
+    
+    
 };

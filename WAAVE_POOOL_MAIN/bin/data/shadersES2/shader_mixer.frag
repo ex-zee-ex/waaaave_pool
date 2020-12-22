@@ -47,6 +47,8 @@ uniform int luma_switch;
 uniform int y_mirror_switch;
 uniform int x_mirror_switch;
 
+uniform int mirror_switch;
+
 varying vec2 texCoordVarying;
 
 
@@ -195,7 +197,35 @@ void main()
 	}//endiftoroidswtich
 	
 	
+	if(mirror_switch==1){
+		if(fb0_coord.x>4.0){fb0_coord.x=fract(fb0_coord.x);}
+		if(fb0_coord.y>4.0){fb0_coord.y=fract(fb0_coord.y);}
+		
+		if(fb0_coord.x>3.0){fb0_coord.x=3.0-fract(fb0_coord.x);}
+		if(fb0_coord.y>3.0){fb0_coord.y=3.0-fract(fb0_coord.y);}
 	
+		if(fb0_coord.x>2.0){fb0_coord.x=fract(fb0_coord.x);}
+		if(fb0_coord.y>2.0){fb0_coord.y=fract(fb0_coord.y);}
+		
+		if(fb0_coord.x>1.0){fb0_coord.x=1.0-fract(fb0_coord.x);}
+		if(fb0_coord.y>1.0){fb0_coord.y=1.0-fract(fb0_coord.y);}
+		
+		
+		
+		
+		if(fb0_coord.x<-2.0){fb0_coord.x=fract(abs(fb0_coord.x));}
+		if(fb0_coord.y<-2.0){fb0_coord.y=fract(abs(fb0_coord.y));}
+		
+		if(fb0_coord.x<-1.0){fb0_coord.x=abs(fract(fb0_coord.x));}
+		if(fb0_coord.y<-1.0){fb0_coord.y=abs(fract(fb0_coord.y));}
+		
+		if(fb0_coord.x<0.0){fb0_coord.x=abs(fb0_coord.x);}
+		if(fb0_coord.y<0.0){fb0_coord.y=abs(fb0_coord.y);}
+	
+		fb0_coord=fract(fb0_coord);
+	}//endiftoroidswtich
+	
+	/*
 	
 	if(x_mirror_switch==1){
 		if(fb0_h_mirror==1){
@@ -212,10 +242,11 @@ void main()
 			}
 		}
 	}
+	*/
 	
 	vec4 fb0_color = texture2D(fb0, fb0_coord);
 	
-	if(toroid_switch==0){
+	if(toroid_switch ==0 && mirror_switch==0){
 		if(fb0_coord.x>1.0){fb0_color=vec4(0.0);}
 		if(fb0_coord.y>1.0){fb0_color=vec4(0.0);}
 		if(fb0_coord.x<0.0){fb0_color=vec4(0.0);}

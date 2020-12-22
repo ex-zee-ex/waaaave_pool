@@ -1,6 +1,6 @@
 obj/linuxarmv6l/Release/src/ofApp.o: \
- /home/pi/openFrameworks/apps/myApps/WAAVE_POOOL_MAIN/src/ofApp.cpp \
- /home/pi/openFrameworks/apps/myApps/WAAVE_POOOL_MAIN/src/ofApp.h \
+ /home/pi/openFrameworks/apps/myApps/WAAAVE_POOL_4/src/ofApp.cpp \
+ /home/pi/openFrameworks/apps/myApps/WAAAVE_POOL_4/src/ofApp.h \
  /home/pi/openFrameworks/libs/openFrameworks/ofMain.h \
  /home/pi/openFrameworks/libs/openFrameworks/utils/ofConstants.h \
  /opt/vc/include/bcm_host.h \
@@ -615,7 +615,7 @@ obj/linuxarmv6l/Release/src/ofApp.o: \
  /home/pi/openFrameworks/addons/ofxOMXCamera/src/VideoEngine.h \
  /home/pi/openFrameworks/addons/ofxOMXCamera/src/VideoRecorder.h
 
-/home/pi/openFrameworks/apps/myApps/WAAVE_POOOL_MAIN/src/ofApp.h:
+/home/pi/openFrameworks/apps/myApps/WAAAVE_POOL_4/src/ofApp.h:
 
 /home/pi/openFrameworks/libs/openFrameworks/ofMain.h:
 

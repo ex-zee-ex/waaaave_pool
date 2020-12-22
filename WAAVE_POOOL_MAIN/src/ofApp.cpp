@@ -21,7 +21,20 @@ bool scaleswitch=1;
 const int fbob=60;
 //const int fbob=120;
 
+
+//might be unnecessary now!!
+bool hdmi_input_switch=0;
+
+//0 is sd aspect ratio
+//use definitely with all of the VSERPI devices 
+//and anything else doing like 480i/p over hdmi
+//1 is corner cropping to fill the screen
+int hdmi_aspect_ratio_switch=0;
+
 //0 is picaputre, 1 is usbinput
+//note that this refers to the picapture SD1 HATs which are no longer
+//(as of Nov 2020) in production.  left in for legacy support but
+//mostly irrelevant to anyone just getting started with these after nov 2020
 bool inputswitch=1;
 
 //0 is wet (framebuffer fed from final output, internal
@@ -75,25 +88,66 @@ int fb0_delayamount=0;
 //dummy variables for midi control
 
 
-float c1=0.0;
-float c2=0.0;
-float c3=0.0;
-float c4=0.0;
-float c5=0.0;
-float c6=0.0;
-float c7=0.0;
-float c8=0.0;
-float c9=0.0;
-float c10=0.0;
-float c11=0.0;
-float c12=0.0;
-float c13=0.0;
-float c14=0.0;
-float c15=.0;
-float c16=.0;
 
 int width=0;
 int height=0;
+
+
+//dummy variables for midi to audio attenuatiors
+//0 is direct midi, 1 is low_x, 2 is mid_x, 3 is high_x
+int control_switch=0;
+
+float low_c1=0.0;
+float low_c2=0.0;
+float low_c3=0.0;
+float low_c4=0.0;
+float low_c5=0.0;
+float low_c6=0.0;
+float low_c7=0.0;
+float low_c8=0.0;
+float low_c9=0.0;
+float low_c10=0.0;
+float low_c11=0.0;
+float low_c12=0.0;
+float low_c13=0.0;
+float low_c14=0.0;
+float low_c15=0.0;
+float low_c16=0.0;
+
+float mid_c1=0.0;
+float mid_c2=0.0;
+float mid_c3=0.0;
+float mid_c4=0.0;
+float mid_c5=0.0;
+float mid_c6=0.0;
+float mid_c7=0.0;
+float mid_c8=0.0;
+float mid_c9=0.0;
+float mid_c10=0.0;
+float mid_c11=0.0;
+float mid_c12=0.0;
+float mid_c13=0.0;
+float mid_c14=0.0;
+float mid_c15=0.0;
+float mid_c16=0.0;
+
+float high_c1=0.0;
+float high_c2=0.0;
+float high_c3=0.0;
+float high_c4=0.0;
+float high_c5=0.0;
+float high_c6=0.0;
+float high_c7=0.0;
+float high_c8=0.0;
+float high_c9=0.0;
+float high_c10=0.0;
+float high_c11=0.0;
+float high_c12=0.0;
+float high_c13=0.0;
+float high_c14=0.0;
+float high_c15=0.0;
+float high_c16=0.0;
+
 
 
 bool clear_switch=0;
@@ -165,15 +219,63 @@ void incIndex()  // call this every frame to calc the offset eeettt
 }
 
 
+//p_lock biz
+//maximum total size of the plock array
+const int p_lock_size=240;
+
+
+//p_lock_switch turns on and off p_locks
+bool p_lock_switch=0;
+
+bool p_lock_erase=0;
+
+//maximum number of p_locks available...maybe there can be one for every knob
+//for whatever wacky reason the last member of this array of arrays has a glitch
+//so i guess just make an extra array and forget about it for now
+const int p_lock_number=17;
+
+//so how we will organize the p_locks is in multidimensional arrays
+//to access the data at timestep x for p_lock 2 (remember counting from 0) we use p_lock[2][x]
+float p_lock[p_lock_number][p_lock_size];
+
+
+//smoothing parameters(i think for all of these we can array both the arrays and the floats
+//for now let us just try 1 smoothing parameter for everything.
+float p_lock_smooth=.5;
+
+
+//and then lets try an array of floats for storing the smoothed values
+float p_lock_smoothed[p_lock_number];
+
+
+//turn on and off writing to the array
+bool p_lock_0_switch=1;
+
+//global counter for all the locks
+int p_lock_increment=0;
+
+
+float my_normalize=0;
+
+float low_value_smoothed=0.0;
+float mid_value_smoothed=0.0;
+float high_value_smoothed=0.0;
+float smoothing_rate=.8;
+
+ofFbo aspect_fix_fbo;
+
+
 //--------------------------------------------------------------
 void ofApp::setup() {
 	//ofSetVerticalSync(true);
+
+	
 
 	ofSetFrameRate(30);
     
     ofBackground(0);
 	
-	ofToggleFullscreen();
+	//ofToggleFullscreen();
 	
     ofHideCursor();
 	
@@ -191,16 +293,7 @@ void ofApp::setup() {
 	omx_settings();  
     
     
-    //pass in the settings and it will start the camera
-	if(inputswitch==0){
-		videoGrabber.setup(settings);
-	}
-
-	
-	if(inputswitch==1){
-		cam1.initGrabber(width,height);
-	}
-	
+   
 	framebuffer0.allocate(width,height);
 	
 	framebuffer0.begin();
@@ -208,14 +301,19 @@ void ofApp::setup() {
 	framebuffer0.end();
 	
 	
-	/*
-	framebuffer1.allocate(width,height);
+	aspect_fix_fbo.allocate(width,height);
 	
-	
-	framebuffer1.begin();
+	aspect_fix_fbo.begin();
 	ofClear(0,0,0,255);
-	framebuffer1.end();
-	*/
+	aspect_fix_fbo.end();
+	
+	
+	dry_framebuffer.allocate(width,height);
+	
+	
+	dry_framebuffer.begin();
+	ofClear(0,0,0,255);
+	dry_framebuffer.end();
 	
 	 for(int i=0;i<fbob;i++){
         
@@ -251,10 +349,47 @@ void ofApp::setup() {
 	
 	// print received messages to the console
 	midiIn.setVerbose(true);
+	
+	
+	
+	
+	//p_lock biz
+	for(int i=0;i<p_lock_number;i++){
+        
+        for(int j=0;j<p_lock_size;j++){
+            
+            p_lock[i][j]=0;
+            
+        }//endplocksize
+    
+    }//endplocknumber
+    
+     //pass in the settings and it will start the camera
+	if(inputswitch==0){
+		videoGrabber.setup(settings);
+	}
+
+	
+	if(inputswitch==1){
+		
+		cam1.setDesiredFrameRate(30);
+		
+		if(hdmi_input_switch==1){
+			cam1.initGrabber(1280,720);
+		}
+		
+		if(hdmi_input_switch==0){
+			cam1.initGrabber(640,480);
+		}
+		
+	}
+	
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
+	
+	
 	
 	if(inputswitch==1){
 		cam1.update();
@@ -265,30 +400,87 @@ void ofApp::update() {
 		omx_updates();
 		
 	}
+	
+	//corner crop and stretch to preserve hd aspect ratio
+	if(hdmi_aspect_ratio_switch==1){
+			aspect_fix_fbo.begin();
+			cam1.draw(0,0,853,480);
+			aspect_fix_fbo.end();
+			
+	}
+	
+	midibiz();
+	
+	for(int i=0;i<p_lock_number;i++){
+        p_lock_smoothed[i]=p_lock[i][p_lock_increment]*(1.0f-p_lock_smooth)+p_lock_smoothed[i]*p_lock_smooth;
+        
+        if(abs(p_lock_smoothed[i])<.05){p_lock_smoothed[i]=0;}
+        
+        
+    }
+ 
+ 
+
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-
-
-	//begin midi biz
-	
-	midibiz();
 	
 	
+	
+	
+	//next-we have three sets of dummy variables fed from the midi controller.
 	
 	//control attenuation section
-
+	
+	//control coeficients
+	
+	//default values will be for wet mode
+	float c_lumakey_value=1.01;
+	float c_mix=2;
+	float c_hue=.75;
+	float c_sat=.5;
+	float c_bright=.5;
+	float c_fb1_mix=1.1;
+	float c_cam1_x=2.0;
+	float c_x=.01;
+	float c_y=.01;
+	float c_z=.05;
+	float c_rotate=.314159265;
+	float c_huex_off=.25;
+	float c_huex_lfo=.25;
+	
+	if(wet_dry_switch==0){
+		c_hue=1.0;
+		c_sat=1.0;
+		c_bright=1.0;
+		c_x=.1;
+		c_y=.1;
+		c_z=.5;
+	}
+	
+	//all the dummy variables will begin with d
+	int d_delay=(abs(framedelayoffset-fbob-fb0_delayamount-
+				int((p_lock_smoothed[15])*(fbob-1.0))
+				)-1)%fbob;
+	float d_lumakey_value=kk+c_lumakey_value*p_lock_smoothed[0];
+							
+	float d_mix=jm+c_mix*p_lock_smoothed[1];
+	float d_hue=fv*(1.0f+c_hue*p_lock_smoothed[2]);
+	float d_sat=gb*(1.0f+c_sat*p_lock_smoothed[3]);
+	float d_bright=hn*(1.0f+c_bright*p_lock_smoothed[4]);
+	float d_fb1_mix=op+c_fb1_mix*p_lock_smoothed[5];
+	float d_fb1_x=fb1_brightx+p_lock_smoothed[6];
+	float d_cam1_x=ll+c_cam1_x*p_lock_smoothed[7];
+	float d_x=sx+c_x*p_lock_smoothed[8];
+	float d_y=dc+c_y*p_lock_smoothed[9];
+	float d_z=az*(1.0f+c_z*p_lock_smoothed[10]);
+	float d_rotate=qw+c_rotate*p_lock_smoothed[11];
+	float d_huex_mod=er*(1.0f-p_lock_smoothed[12]);
+	float d_huex_off=ty+c_huex_off*p_lock_smoothed[13];
+	float d_huex_lfo=ui+c_huex_lfo*p_lock_smoothed[14];
 	
 	
-	
-	//ok so here is the plan.  try out 1 framebuffer and test out how far back
-//in time we can go.  the mix will have the following controls
-//hsb for framebuffer 0 and 1
-//positions on framebuffer0 ionly 
-//some kind of chaotic hue mixing for fb0
-//lumakeying on fb0 only
-    
 
     
     
@@ -316,46 +508,50 @@ void ofApp::draw() {
 		}
 		
 		if(inputswitch==1){
-			cam1.draw(0,0);
+			if(hdmi_aspect_ratio_switch==0){
+				cam1.draw(0,0,640,480);
+			}
+			
+			if(hdmi_aspect_ratio_switch==1){
+				aspect_fix_fbo.draw(0,0,640,480);
+			}
+			
 		}
 	}
 	
-	//videoGrabber.draw(0,0);
+	//textures
+	shader_mixer.setUniformTexture("fb0", pastFrames[d_delay].getTexture(),1);
+	
+	if(wet_dry_switch==1){
+		shader_mixer.setUniformTexture("fb1", pastFrames[(abs(framedelayoffset-fbob)-1)%fbob].getTexture(),2);
+	}
+	if(wet_dry_switch==0){
+		shader_mixer.setUniformTexture("fb1", dry_framebuffer.getTexture(),2);
+	}	
+	//continuous variables
+	shader_mixer.setUniform1f("fb0_lumakey_value",d_lumakey_value);
+    shader_mixer.setUniform1f("fb0_mix",d_mix);
+    shader_mixer.setUniform3f("fb0_hsbx",ofVec3f(d_hue,d_sat,d_bright));
+    shader_mixer.setUniform1f("fb1_mix",d_fb1_mix);
+    shader_mixer.setUniform1f("fb1_brightx",d_fb1_x );
+    shader_mixer.setUniform1f("cam1_brightx",d_cam1_x);
+    shader_mixer.setUniform1f("fb0_xdisplace",d_x);
+    shader_mixer.setUniform1f("fb0_ydisplace",d_y);
+    shader_mixer.setUniform1f("fb0_zdisplace",d_z);
+    shader_mixer.setUniform1f("fb0_rotate",d_rotate);
+    shader_mixer.setUniform3f("fb0_huex",ofVec3f(d_huex_mod,d_huex_off,d_huex_lfo));
     
-    shader_mixer.setUniformTexture("fb0", pastFrames[(abs(framedelayoffset-fbob-fb0_delayamount-int(c16*(fbob-1.0)))-1)%fbob].getTexture(),1);
-    shader_mixer.setUniformTexture("fb1", pastFrames[(abs(framedelayoffset-fbob)-1)%fbob].getTexture(),2);
+    if(wet_dry_switch==1){
+		shader_mixer.setUniform1i("toroid_switch",toroid_switch);
+        shader_mixer.setUniform1i("mirror_switch",0);
+	}
+	
+	 if(wet_dry_switch==0){
+		shader_mixer.setUniform1i("toroid_switch",0);
+        shader_mixer.setUniform1i("mirror_switch",toroid_switch);
+	}
     
-    
-    //mixing variables
-    shader_mixer.setUniform1f("fb0_mix",jm+2.0*c2);
-    shader_mixer.setUniform1f("fb0_lumakey_value",kk+1.01*c1);
    
-    
-    
-    shader_mixer.setUniform1f("fb1_mix",op+1.1*c6);
-    
-    //fb0_displacment variables
-    shader_mixer.setUniform1f("fb0_xdisplace",sx+.01*c9);
-    shader_mixer.setUniform1f("fb0_ydisplace",dc+.01*c10);
-    shader_mixer.setUniform1f("fb0_zdisplace",az*(1+.05*c11));
-    shader_mixer.setUniform1f("fb0_rotate",qw+.314159265*c12);
-    
-   
-    
-    
-    ofVec3f dummy3f;
-    dummy3f.set(fv*(1.0+.75*c3),gb*(1.0+.5*c4),hn*(1.0+.5*c5));//(1.0+.35*c5));
-    shader_mixer.setUniform3f("fb0_hsbx",dummy3f);
-    
-    
-    dummy3f.set(er*(1.0-c13),ty+.25*c14,ui+.25*c15);
-    //dummy3f.set(1.0,.5,.01);
-    shader_mixer.setUniform3f("fb0_huex",dummy3f);
-    
-    shader_mixer.setUniform1f("fb1_brightx", fb1_brightx+c7);
-    shader_mixer.setUniform1f("cam1_brightx",ll+4.0*c8);
-    
-    
     shader_mixer.setUniform1i("fb0_b_invert",fb0_b_invert);
     shader_mixer.setUniform1i("fb0_h_invert",fb0_h_invert);
     shader_mixer.setUniform1i("fb0_s_invert",fb0_s_invert);
@@ -363,16 +559,16 @@ void ofApp::draw() {
     shader_mixer.setUniform1i("fb0_h_mirror",fb0_h_mirror);
     shader_mixer.setUniform1i("fb0_v_mirror",fb0_v_mirror);
     
-    shader_mixer.setUniform1i("toroid_switch",toroid_switch);
+    //shader_mixer.setUniform1i("toroid_switch",toroid_switch);
     
     
     
     
     shader_mixer.setUniform1i("luma_switch",luma_switch);
     
-    shader_mixer.setUniform1i("x_mirror_switch",x_mirror_switch);
+    //shader_mixer.setUniform1i("x_mirror_switch",x_mirror_switch);
     
-    shader_mixer.setUniform1i("y_mirror_switch",y_mirror_switch);
+    //shader_mixer.setUniform1i("y_mirror_switch",y_mirror_switch);
 
     shader_mixer.end();
 	framebuffer0.end();
@@ -385,7 +581,8 @@ void ofApp::draw() {
 	
 	
 	
-	framebuffer0.draw(0,0,ofGetScreenWidth(),ofGetScreenHeight());
+	//framebuffer0.draw(0,0,ofGetScreenWidth(),ofGetScreenHeight());
+	framebuffer0.draw(0,0,ofGetWidth(),ofGetHeight());
 	
 
 	//_-------------------------------------------
@@ -393,10 +590,10 @@ void ofApp::draw() {
 	
 	pastFrames[abs(fbob-framedelayoffset)-1].begin(); //eeettt
     
-    ofPushMatrix();
-	ofTranslate(framebuffer0.getWidth()/2,framebuffer0.getHeight()/2);
-    ofRotateYRad(y_skew);
-    ofRotateXRad(x_skew);
+    //ofPushMatrix();
+	//ofTranslate(framebuffer0.getWidth()/2,framebuffer0.getHeight()/2);
+    //ofRotateYRad(y_skew);
+    //ofRotateXRad(x_skew);
     
     if(wet_dry_switch==0){
 		
@@ -404,37 +601,53 @@ void ofApp::draw() {
 		
 		
 		if(inputswitch==0){
-			videoGrabber.draw(-framebuffer0.getWidth()/2,-framebuffer0.getHeight()/2,framebuffer0.getWidth(),framebuffer0.getHeight());
+			videoGrabber.draw(0,0,framebuffer0.getWidth(),framebuffer0.getHeight());
 		}
 		
 		if(inputswitch==1){
-			cam1.draw(-framebuffer0.getWidth()/2,-framebuffer0.getHeight()/2,framebuffer0.getWidth(),framebuffer0.getHeight());
+			if(hdmi_aspect_ratio_switch==0){
+				cam1.draw(0,0,640,480);
+			}
+			
+			if(hdmi_aspect_ratio_switch==1){
+				aspect_fix_fbo.draw(0,0,640,480);
+			}
 		}
 	
-		
-		}//endifwetdry0
+	dry_framebuffer.begin();
+	framebuffer0.draw(0,0);
+	dry_framebuffer.end();
+	
+	}//endifwetdry0
 	
 		
 	if(wet_dry_switch==1){
 		
-		framebuffer0.draw(-framebuffer0.getWidth()/2,-framebuffer0.getHeight()/2);
+		framebuffer0.draw(0,0);
 		
 		
 		}//endifwetdry1
-	ofPopMatrix();
+	//ofPopMatrix();
 	
     pastFrames[abs(fbob-framedelayoffset)-1].end(); //eeettt
 
 	incIndex();
    
-	//ofDrawBitmapString("fps =" + ofToString(getFps()), 10, ofGetHeight() - 5 );
-
+	//p_lock biz
+	 if(p_lock_switch==1){
+        p_lock_increment++;
+        p_lock_increment=p_lock_increment%p_lock_size;
+    }
+   
+	
+	
+	
 //i use this block of code to print out like useful information for debugging various things and/or just to keep the 
 //framerate displayed to make sure i'm not losing any frames while testing out new features.  uncomment the ofDrawBitmap etc etc
 //to print the stuff out on screen
    ofSetColor(255);
    string msg="fps="+ofToString(ofGetFrameRate(),2)+" clear switch"+ofToString(clear_switch,5);//+" z="+ofToString(az,5);
-  // ofDrawBitmapString(msg,10,10);
+   //ofDrawBitmapString(msg,10,10);
 }
 
 //--------------------------------------------------------------
@@ -486,6 +699,8 @@ void ofApp::newMidiMessage(ofxMidiMessage& msg) {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
+	
+	
 	//error-if i decrement fb0_delayamount it always crashes...
 	if (key == '[') {fb0_delayamount += 1;}
     if (key == ']') {
@@ -575,7 +790,10 @@ void ofApp::keyPressed(int key) {
     
     
     if(key=='2'){fb0_b_invert=!fb0_b_invert;}
-    if(key=='3'){fb0_h_invert=!fb0_h_invert;}
+    
+    if(key=='3'){hdmi_aspect_ratio_switch=!hdmi_aspect_ratio_switch;}
+    
+    
     if(key=='4'){fb0_s_invert=!fb0_s_invert;}
     
     if(key=='5'){fb0_v_mirror=!fb0_v_mirror;}
@@ -641,6 +859,11 @@ void ofApp::keyPressed(int key) {
 }
 
 void ofApp::midibiz(){
+	
+    //lets figure out the hd switch thing here
+	//bool cc_aspect_switch=0;
+    //int cc_aspect_int=0;
+                
 	for(unsigned int i = 0; i < midiMessages.size(); ++i) {
 
 		ofxMidiMessage &message = midiMessages[i];
@@ -668,68 +891,65 @@ void ofApp::midibiz(){
                 //if u uncomment the second line on each of these if statements that will switch thems to unipolor
                 //controls (ranging from 0.0to 1.0) if  you prefer
                 
-		//these controls are currently set to the default cc values of the korg nanostudio so if you got one of those yr in luck!
-		//otherwise you will need to figure out the cc values for the knobs and sliders on your particular controller
-		//and for each line where it says " if(message.control==XX)" replace XX with the cc value for the knob that you want to 
-		//map for each control.  
-		    
+		
                 
-                /* the nanostudio kontrols
-                //c1 maps to fb0 hue attenuation
-                if(message.control==20){
-                    c1=(message.value-63.0)/63.0;
-                   //  c1=(message.value)/127.00;
+                
+                
+                
+                
+                
+                if(message.control==39){
+                    if(message.value==127){
+                        p_lock_0_switch=0;
+                       // p_lock_increment=0;
+                    }
+                    
+                    if(message.value==0){
+                        p_lock_0_switch=1;
+                    }
+
+                }
+                
+                
+                if(message.control==55){
+                    if(message.value==127){
+                        p_lock_switch=1;
+                        // p_lock_increment=0;
+                        
+                        for(int i=0;i<p_lock_number;i++){
+								p_lock_smoothed[i]=0;
+								for(int j=0;j<p_lock_size;j++){
+                                
+									p_lock[i][j]=p_lock[i][p_lock_increment];
+                                
+								}//endplocksize
+                            
+							}//endplocknumber
+                    }
+                    
+                    if(message.value==0){
+                        p_lock_switch=0;
+                    }
                     
                 }
                 
-                //c2 maps to fb0 saturation attenuation
-                if(message.control==21){
-                    c2=(message.value-63.0)/63.0;
-                   //   c2=(message.value)/127.00;
-                    
-                }
-                
-                //c3 maps to fb0 brightness attenuation
-                if(message.control==22){
-                    c3=(message.value-63.0)/63.00;
-                    //  c3=(message.value)/127.00;
-                }
-                
-                //c4 maps to fb0_mix amount
-                if(message.control==23){
-                     c4=(message.value-63.0)/63.00;
-                   // c4=(message.value)/127.00;
-                   
-                }
-                
-                //c5 maps to fb0 x displace
-                if(message.control==24){
-                     c5=(message.value-63.0)/63.00;
-                  //  c5=(message.value)/127.00;
+                /*
+                if(message.control==58){
+                    if(message.value==127){
+                        for(int i=0;i<p_lock_number;i++){
+                            
+                            for(int j=0;j<p_lock_size;j++){
+                                
+                                p_lock[i][j]=0;
+                                
+                            }//endplocksize
+                            
+                        }//endplocknumber
+                    }
                   
+                    
                 }
-                
-                //c6 maps to fb0 y displace
-                if(message.control==25){
-                    c6=(message.value-63.0)/63.0;
-                    //  c4=(message.value)/127.00;
-                }
-                
-                //c7 maps to fb0 z displace
-                if(message.control==26){
-                    c7=(message.value-63.0)/63.0;
-                    //  c4=(message.value)/127.00;
-                }
-                
-                //c8 maps to fb0 luma key value
-                if(message.control==27){
-                   //  c8=(message.value-63.0)/63.00;
-                    c8=(message.value)/127.0;
-                   
-                }
-                
                 */
-                
                 
                 if(message.control==32){
 					if(message.value==127){
@@ -902,27 +1122,8 @@ void ofApp::midibiz(){
                 }
                 
                 
-                 if(message.control==39){
-					if(message.value==127){
-						y_skew_switch=TRUE;
-					}
-					
-					if(message.value==0){
-						y_skew_switch=FALSE;
-					}
-					
-                }
                 
-                if(message.control==55){
-					if(message.value==127){
-						x_skew_switch=TRUE;
-					}
-					
-					if(message.value==0){
-						x_skew_switch=FALSE;
-					}
-					
-                }
+             
                 if(y_skew_switch==TRUE){
 					y_skew+=.00001;
                 }
@@ -1015,6 +1216,8 @@ void ofApp::midibiz(){
                 
                 //
                 
+                
+                /*
                 if(message.control==62){
 					if(message.value==127){
 						luma_switch=TRUE;
@@ -1025,7 +1228,9 @@ void ofApp::midibiz(){
 					}
 					
                 }
+                */
                 
+                /*
                 if(message.control==61){
 					if(message.value==127){
 						x_mirror_switch=TRUE;
@@ -1036,225 +1241,367 @@ void ofApp::midibiz(){
 					}
 					
                 }
+                */
                 
                  if(message.control==60){
 					if(message.value==127){
-						y_mirror_switch=TRUE;
+						luma_switch=TRUE;
 					}
 					
 					if(message.value==0){
-						y_mirror_switch=FALSE;
+						luma_switch=FALSE;
 					}
 					
                 }
                 
                 
+                if(message.control==43){
+					if(message.value==127){
+						control_switch=1;
+					}
+					
+					if(message.value==0){
+						control_switch=0;
+					}
+					
+                }
                 
+                if(message.control==44){
+					if(message.value==127){
+						control_switch=2;
+					}
+					
+					if(message.value==0){
+						control_switch=0;
+					}
+					
+                }
                 
+                 if(message.control==42){
+					if(message.value==127){
+						control_switch=3;
+					}
+					
+					if(message.value==0){
+						control_switch=0;
+					}
+					
+                }
+                /*
+                
+                if(message.control==62){
+					if(message.value==127){
+						control_switch=1;
+					}
+					
+					if(message.value==0){
+						control_switch=0;
+					}
+					
+                }
+                
+                if(message.control==61){
+					if(message.value==127){
+						control_switch=2;
+					}
+					
+					if(message.value==0){
+						control_switch=0;
+					}
+					
+                }
+                
+                 if(message.control==60){
+					if(message.value==127){
+						control_switch=3;
+					}
+					
+					if(message.value==0){
+						control_switch=0;
+					}
+					
+                }
+                */
                 
                 //nanokontrol2 controls
                  //c1 maps to fb0 lumakey
                 if(message.control==16){
-                  //  c1=(message.value-63.0)/63.0;
-                     c1=(message.value)/127.00;
+                   
+					if(control_switch==0){	
+						if(p_lock_0_switch==1){
+							p_lock[0][p_lock_increment]=message.value/127.0f;
+						}              
+                    }
+                    
                     
                 }
                 
-                //c2 maps to fb0 mix
-                if(message.control==17){
-                    c2=(message.value-63.0)/63.0;
-                   //   c2=(message.value)/127.00;
+               if(message.control==17){
+                   
+                   if(control_switch==0){
+						if(p_lock_0_switch==1){
+							p_lock[1][p_lock_increment]=(message.value-63)/63.0f;
+						}
+                    }
                     
+                  
                 }
                 
                 //c3 maps to fb0 huex
                 if(message.control==18){
-                    c3=(message.value-63.0)/63.00;
-                    //  c3=(message.value)/127.00;
+                    if(control_switch==0){
+						if(p_lock_0_switch==1){
+							p_lock[2][p_lock_increment]=(message.value-63)/63.0f;
+						}
+                    }
+                
+                    
                 }
                 
                 //c4 maps to fb0 satx
                 if(message.control==19){
-                     c4=(message.value-63.0)/63.00;
-                   // c4=(message.value)/127.00;
+                  if(control_switch==0){
+						if(p_lock_0_switch==1){
+							p_lock[3][p_lock_increment]=(message.value-63)/63.0f;
+						}
+                    }
                    
                 }
                 
                 //c5 maps to fb0 brightx
                 if(message.control==20){
-                     c5=(message.value-63.0)/63.00;
-                  //  c5=(message.value)/127.00;
-                  
+                    if(control_switch==0){
+						if(p_lock_0_switch==1){
+							p_lock[4][p_lock_increment]=(message.value-63)/63.0f;
+						}
+                    }
+					
+					
                 }
                 
                 //c6 maps to temporal filter
                 if(message.control==21){
-                    c6=(message.value-63.0)/63.0;
-                     // c6=(message.value)/127.00;
+                   if(control_switch==0){
+						if(p_lock_0_switch==1){
+							p_lock[5][p_lock_increment]=(message.value-63)/63.0f;
+						}
+                    }
+                 
                 }
                 
                 //c7 maps to temporal filter resonance
                 if(message.control==22){
-                    //c7=(message.value-63.0)/63.0;
-                      c7=(message.value)/127.00;
+                    if(control_switch==0){
+						if(p_lock_0_switch==1){
+							p_lock[6][p_lock_increment]=(message.value)/127.0f;
+						}
+                    }
+                 
                 }
                 
                 //c8 maps to brightx
                 if(message.control==23){
-                     //c8=(message.value-63.0)/63.00;
-                    c8=(message.value)/127.0;
+                     if(control_switch==0){
+						if(p_lock_0_switch==1){
+							p_lock[7][p_lock_increment]=(message.value)/127.0f;
+						}
+                    }
+                  
                    
                 }
                 
                 //c9 maps to fb0 x displace
                 if(message.control==120){
-                     c9=(message.value-63.0)/63.00;
+					if(control_switch==0){
+						p_lock[8][p_lock_increment]=(message.value-63)/63.0f;
                      
-                     if(x_2==TRUE){
-						 c9=2.0*(message.value-63.0)/63.00;
-						 }
+						if(x_2==TRUE){
+							p_lock[8][p_lock_increment]=2.0*(message.value-63.0)/63.0f;
+							}
 						 
-					 if(x_5==TRUE){
-						 c9=5.0*(message.value-63.0)/63.00;
-						 }
-					 if(x_10==TRUE){
-						 c9=10.0*(message.value-63.0)/63.00;
-						 }	 	 
-                    //c9=(message.value)/127.0;
+						if(x_5==TRUE){
+							p_lock[8][p_lock_increment]=5.0*(message.value-63.0)/63.0f;
+							}
+						if(x_10==TRUE){
+							p_lock[8][p_lock_increment]=10.0*(message.value-63.0)/63.0f;
+							}	 	 
+                    }
+                    
+                    
+                    
+                    
+                    
+                    
                    
                 }
                 
                  //c10 maps to fb0 y displace
                 if(message.control==121){
-                     c10=(message.value-63.0)/63.00;
+					if(control_switch==0){
+						p_lock[9][p_lock_increment]=(message.value-63)/63.0f;
                      
-                     
-                     if(y_2==TRUE){
-						 c10=2.0*(message.value-63.0)/63.00;
+						if(y_2==TRUE){
+							p_lock[9][p_lock_increment]=2.0*(message.value-63.0)/63.0f;
 						 }
 						 
-					 if(y_5==TRUE){
-						 c10=5.0*(message.value-63.0)/63.00;
+						if(y_5==TRUE){
+							p_lock[9][p_lock_increment]=5.0*(message.value-63.0)/63.0f;
 						 }
-					 if(y_10==TRUE){
-						 c10=10.0*(message.value-63.0)/63.00;
+						if(y_10==TRUE){
+							p_lock[9][p_lock_increment]=10.0*(message.value-63.0)/63.0f;
 						 }	 	 
+                     }
                      
                      
-                    //c10=(message.value)/127.0;
+                     
+                     
+                     
+                     
+                    
                    
                 }
                 
                
                 if(message.control==122){
-                     c11=(message.value-63.0)/63.00;
+					if(control_switch==0){
+						p_lock[10][p_lock_increment]=(message.value-63.0)/63.0f;
                      
-                     if(z_2==TRUE){
-						 c11=2.0*(message.value-63.0)/63.00;
+						if(z_2==TRUE){
+							p_lock[10][p_lock_increment]=2.0*(message.value-63.0)/63.0f;
 						 }
 						 
-					 if(z_5==TRUE){
-						 c11=5.0*(message.value-63.0)/63.00;
+						if(z_5==TRUE){
+							p_lock[10][p_lock_increment]=5.0*(message.value-63.0)/63.0f;
 						 }
-					 if(z_10==TRUE){
-						 c11=10.0*(message.value-63.0)/63.00;
+						if(z_10==TRUE){
+							p_lock[10][p_lock_increment]=10.0*(message.value-63.0)/63.0f;
 						 }	 	 
-                     
-                    //c11=(message.value)/127.0;
+                   }
+                   
+                   
+                   
+                   
+                   
+                   
                    
                 }
               
                 if(message.control==123){
-                     c12=(message.value-63.0)/63.00;
+					if(control_switch==0){
+						p_lock[11][p_lock_increment]=(message.value-63)/63.0f;
                      
-                     if(theta_0==TRUE){
-						 c12=2*(message.value-63.0)/63.00;
+						if(theta_0==TRUE){
+							p_lock[11][p_lock_increment]=2*(message.value-63.0)/63.0f;
 						 }
 						 
-					 if(theta_1==TRUE){
-						 c12=4*(message.value-63.0)/63.00;
+						if(theta_1==TRUE){
+							p_lock[11][p_lock_increment]=4*(message.value-63.0)/63.0f;
 						 }
-					 if(theta_2==TRUE){
-						 c12=8*(message.value-63.0)/63.00;
+						if(theta_2==TRUE){
+							p_lock[11][p_lock_increment]=8*(message.value-63.0)/63.0f;
 						 }	 	
-                     
-                   // c12=(message.value)/127.0;
+					}   
+					
+					  
+					
+					
+					
+					 
+                  
                    
                 }
                 
              
                 if(message.control==124){
-                    // c13=(message.value-63.0)/63.00;
-                     
-                    //instead of switches to go from different multiples
-                    //switche to go from 0-.25, 0-.5,0-.75,0-1 
-                     
-                    c13=(message.value)/32.0;
+                    if(control_switch==0){
+						p_lock[12][p_lock_increment]=(message.value)/32.0f;
                     
-                    if(huexx_0==TRUE){
-						 c13=message.value/64;
+						if(huexx_0==TRUE){
+							p_lock[12][p_lock_increment]=message.value/64.0f;
 						 }
 						 
-					 if(huexx_1==TRUE){
-						 c13=message.value/96.00;
+						if(huexx_1==TRUE){
+							p_lock[12][p_lock_increment]=message.value/96.0f;
 						 }
-					 if(huexx_2==TRUE){
-						 c13=message.value/127.00;
+						if(huexx_2==TRUE){
+							p_lock[12][p_lock_increment]=message.value/127.0f;
 						 }	 
-                   
+					}
+					
+					
+					
+					
+					
+					
                 }
               
             
                 if(message.control==125){
-                     c14=(message.value-63.0)/63.00;
+					if(control_switch==0){
+						p_lock[13][p_lock_increment]=(message.value-63.0)/63.0f;
                      
-                     if(huexy_0==TRUE){
-						 c14=2*(message.value-63.0)/63.00;
+						if(huexy_0==TRUE){
+							p_lock[13][p_lock_increment]=2*(message.value-63.0)/63.0f;
 						 }
 						 
-					 if(huexy_1==TRUE){
-						 c14=4*(message.value-63.0)/63.00;
+						if(huexy_1==TRUE){
+							p_lock[13][p_lock_increment]=4*(message.value-63.0)/63.0f;
 						 }
-					 if(huexy_2==TRUE){
-						 c14=8*(message.value-63.0)/63.00;
+						if(huexy_2==TRUE){
+							p_lock[13][p_lock_increment]=8*(message.value-63.0)/63.0f;
 						 }	 
+                     }
                      
                      
                      
-                    //c14=(message.value)/127.0;
+                     
+                     
+                     
+                     
+                    
                    
                 }
                 
                
                 if(message.control==126){
-                     c15=(message.value-63.0)/63.00;
+					if(control_switch==0){
+						p_lock[14][p_lock_increment]=(message.value-63.0)/63.0f;
                      
-                     if(huexz_0==TRUE){
-						 c15=2*(message.value-63.0)/63.00;
-						 }
+						if(huexz_0==TRUE){
+							p_lock[14][p_lock_increment]=2*(message.value-63.0)/63.0f;
+						}
 						 
-					 if(huexz_1==TRUE){
-						 c15=4*(message.value-63.0)/63.00;
-						 }
-					 if(huexz_2==TRUE){
-						 c15=8*(message.value-63.0)/63.00;
-						 }	 
+						if(huexz_1==TRUE){
+							p_lock[14][p_lock_increment]=4*(message.value-63.0)/63.0f;
+						}
+						if(huexz_2==TRUE){
+							p_lock[14][p_lock_increment]=8*(message.value-63.0)/63.0f;
+						}	 
+                     }
                      
-                    //c15=(message.value)/127.0;
+                     
+                     
+                      
+                     
+                     
+                     
+                    
                    
                 }
                 
                 
                 if(message.control==127){
-                   //  c16=(message.value-63.0)/63.00;
-                    c16=(message.value)/127.0;
+                   if(control_switch==0){
+						p_lock[15][p_lock_increment]=(message.value)/127.0;
+                   }
+                   
                    
                 }
                 
                 
                 
                 
-                
+                //gots to remap these to 60-61
                  //cc43 maps to fb0_b_invert
                 if(message.control==43){
 					if(message.value==127){
@@ -1277,14 +1624,28 @@ void ofApp::midibiz(){
 					}
                 }
                 
+                 if(message.control==62){
+					if(message.value==127){
+						//fb0_h_invert=TRUE;
+						hdmi_aspect_ratio_switch=TRUE;
+					}
+					
+					if(message.value==0){
+						//fb0_h_invert=FALSE;
+						hdmi_aspect_ratio_switch=FALSE;
+					}
+                }
+                
                 //cc42 maps to fb0_s_invert
                 if(message.control==42){
 					if(message.value==127){
 						fb0_h_invert=TRUE;
+						
 					}
 					
 					if(message.value==0){
 						fb0_h_invert=FALSE;
+						
 					}
                 }
                 
@@ -1319,43 +1680,50 @@ void ofApp::midibiz(){
                 //this needs to be tested out and reworked
                 //cc45 maps to fb0 clear
                 //still doesn't work arggg
-                if(message.control==58){
+                
+                
+                
+                 if(message.control==59){
+						
+					if(message.value==127){
+                        for(int i=0;i<p_lock_number;i++){
+                            
+                            for(int j=0;j<p_lock_size;j++){
+                                
+                                p_lock[i][j]=0;
+                                
+                            }//endplocksize
+                            
+                        }//endplocknumber
+                    }
+                }
+                 
+                
+               if(message.control==58){
 					if(message.value==127){
 						if(clear_switch==0){
-						 clear_switch=1;
-								//clear the framebuffer if thats whats up
-								framebuffer0.begin();
-								ofClear(0, 0, 0, 255);
-								framebuffer0.end();
+							clear_switch=1;
+							//clear the framebuffer if thats whats up
+							framebuffer0.begin();
+							ofClear(0, 0, 0, 255);
+							framebuffer0.end();
 
-								for(int i=0;i<fbob;i++){
-									pastFrames[i].begin();
-									ofClear(0,0,0,255);
-									pastFrames[i].end();
+							for(int i=0;i<fbob;i++){
+								pastFrames[i].begin();
+								ofClear(0,0,0,255);
+								pastFrames[i].end();
         
     
-								}//endifor
+							}//endifor
 								
-							}
-						
+						}
 					}
-					
 					
                 }
                 
                 if(message.control!=58){
 					clear_switch=0;
                 }
-                
-                 if(message.control==59){
-						
-						x_skew=y_skew=c1=c2=c3=c4=c5=c6=c7=c8=c9=c10=c11=c12=c13=c14=c15=c16=0.0;
-                }
-                 
-                
-               
-               
-
                 
               
             }
@@ -1379,9 +1747,11 @@ void ofApp::midibiz(){
 	}
 	
 	
+	//midiMessages.clear();
+	
 	//end midi biz
 	
-	}
+}
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {

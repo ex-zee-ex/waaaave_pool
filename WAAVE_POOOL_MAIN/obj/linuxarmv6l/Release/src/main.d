@@ -1,5 +1,5 @@
 obj/linuxarmv6l/Release/src/main.o: \
- /home/pi/openFrameworks/apps/myApps/WAAVE_POOOL_MAIN/src/main.cpp \
+ /home/pi/openFrameworks/apps/myApps/WAAAVE_POOL_4/src/main.cpp \
  /home/pi/openFrameworks/libs/openFrameworks/ofMain.h \
  /home/pi/openFrameworks/libs/openFrameworks/utils/ofConstants.h \
  /opt/vc/include/bcm_host.h \
@@ -584,7 +584,7 @@ obj/linuxarmv6l/Release/src/main.o: \
  /home/pi/openFrameworks/libs/openFrameworks/3d/of3dUtils.h \
  /home/pi/openFrameworks/libs/openFrameworks/3d/ofCamera.h \
  /home/pi/openFrameworks/libs/openFrameworks/3d/ofEasyCam.h \
- /home/pi/openFrameworks/apps/myApps/WAAVE_POOOL_MAIN/src/ofApp.h \
+ /home/pi/openFrameworks/apps/myApps/WAAAVE_POOL_4/src/ofApp.h \
  /home/pi/openFrameworks/addons/ofxMidi/src/ofxMidi.h \
  /home/pi/openFrameworks/addons/ofxMidi/src/ofxMidiIn.h \
  /home/pi/openFrameworks/addons/ofxMidi/src/ofxBaseMidi.h \
@@ -1823,7 +1823,7 @@ obj/linuxarmv6l/Release/src/main.o: \
 
 /home/pi/openFrameworks/libs/openFrameworks/3d/ofEasyCam.h:
 
-/home/pi/openFrameworks/apps/myApps/WAAVE_POOOL_MAIN/src/ofApp.h:
+/home/pi/openFrameworks/apps/myApps/WAAAVE_POOL_4/src/ofApp.h:
 
 /home/pi/openFrameworks/addons/ofxMidi/src/ofxMidi.h:
 
