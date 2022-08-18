@@ -58,7 +58,7 @@ void main()
 	//got to boost that bb
 	if(sharpenAmount>0.0){
 	ogColorHSB.z*=(1.0+sharpenAmount*.45+.45*(vSharpenAmount*VVV));
-	ogColorHSB.x*=(1.0+sharpenAmount*.25+.25*(vSharpenAmount*VVV));	
+	ogColorHSB.y*=(1.0+sharpenAmount*.25+.25*(vSharpenAmount*VVV));	
 	}
 	
 	outColor.rgb=hsb2rgb(ogColorHSB);
